@@ -323,6 +323,14 @@ class RAGProcessor:
                 generation_context=generation_context,
                 pain_point_results=pain_point_results,
             )
+            
+            # Process response through meta-reflection middleware
+            if hasattr(dynamic_retriever, 'process_response_with_reflection'):
+                response = dynamic_retriever.process_response_with_reflection(
+                    response=response,
+                    user_message=user_question,
+                    patient_id=session_id  # Using session_id as patient_id
+                )
 
             # Determine final context using ResponseGenerator's method
             context, updated_metadata = self.response_generator.determine_final_context(

@@ -40,9 +40,13 @@ if not is_github_actions():
 supabase_url = os.environ.get("SUPABASE_URL")
 supabase_key = os.environ.get("SUPABASE_KEY")
 
+import pytest
+
 if not supabase_url or not supabase_key:
-    logger.critical("Missing Supabase credentials")
-    sys.exit(1)
+    pytest.skip(
+        "Skipping Supabase-dependent tests: missing SUPABASE_URL or SUPABASE_KEY",
+        allow_module_level=True
+    )
 
 # Device configuration
 device = "cuda" if torch.cuda.is_available() else "cpu"

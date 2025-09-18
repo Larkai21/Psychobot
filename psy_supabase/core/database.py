@@ -72,6 +72,7 @@ import json
 import re
 import traceback
 from typing import Any, Dict, List, Optional
+from datetime import datetime
 
 from sentence_transformers import SentenceTransformer
 from supabase import create_client
@@ -88,12 +89,14 @@ from psy_supabase.config import (
 )
 from psy_supabase.core.model_manager import get_embedding_provider
 from psy_supabase.core.pain_point_detector import PainPointDetector
+from psy_supabase.nlp.preprocessor import PsychologicalTextChunker, TherapeuticChunk
 from psy_supabase.utilities.embedding_utils import detect_repetition_pattern
 from psy_supabase.utilities.utils import clean_text, debug_errors
 from psy_supabase.utilities.utils_mapping import map_approach_name, map_theme_to_approach_type
 from psy_supabase.utilities.vector_utils import ensure_vector_indexes
 from psy_supabase.utilities.vector_utils import optimize_vector_operations as optimize_vectors
 from psy_supabase.utilities.vector_utils import update_table_statistics
+from psy_supabase.db.policies import DatabasePolicyManager, UserRole
 
 # Set up logging
 logger = get_package_logger(__name__)
@@ -129,6 +132,13 @@ class DatabaseManager:
         self.db_config = DATABASE_CONFIG
 
         self.supabase = create_client(self.supabase_url, self.supabase_key)
+        
+        # Initialize psychological chunker
+        self.psychological_chunker = PsychologicalTextChunker()
+        
+        # Initialize policy manager for security and access control
+        self.policy_manager = DatabasePolicyManager(self.supabase)
+        self._encryption_key: Optional[str] = None
 
         # Special case for default schema
         if user_id == "default":
@@ -141,7 +151,7 @@ class DatabaseManager:
     def pain_point_detector(self) -> PainPointDetector:
         """Lazy initialization of pain point detector."""
         if self._pain_point_detector is None:
-            self._pain_point_detector = PainPointDetector(self)
+            self._pain_point_detector = PainPointDetector(self.supabase, self.schema_name)
         return self._pain_point_detector
 
     def create_default_schema_sync(self) -> bool:
@@ -460,12 +470,243 @@ class DatabaseManager:
                     logger.error("Pain point detection failed, continuing: %s", e)
                     # Continue with normal flow even if pain point detection fails
 
-            return {"success": True}
+            return {"success": True, "interaction_id": interaction_id}
 
         except Exception as e:
             logger.error("Error adding interaction: %s", e)
             logger.error(traceback.format_exc())
             return {"success": False, "error": str(e)}
+
+    @typechecked
+    def add_interaction_with_chunks(self, data_point: Dict[str, Any], session_id: Optional[str] = None) -> Dict[str, Any]:
+        """
+        Add an interaction with psychological chunking and metadata storage.
+        
+        Args:
+            data_point: Dictionary containing interaction data
+            session_id: Optional session identifier
+            
+        Returns:
+            Dictionary with operation result including chunk information
+        """
+        try:
+            # First add the main interaction
+            result = self.add_interaction(data_point, session_id)
+            if not result.get("success"):
+                return result
+            
+            # Extract interaction ID from the result
+            interaction_id = result.get("interaction_id")
+            if not interaction_id:
+                # Try to get the last inserted interaction ID
+                history = self.get_conversation_history(session_id)
+                if history:
+                    interaction_id = history[-1].get("interaction_id")
+            
+            if not interaction_id:
+                logger.warning("Could not determine interaction ID for chunk storage")
+                return result
+            
+            # Process question with psychological chunking
+            question = data_point.get("question", "")
+            if question and question.strip():
+                chunks = self.psychological_chunker.chunk_text(question)
+                
+                if chunks:
+                    chunk_results = []
+                    for chunk in chunks:
+                        chunk_result = self.add_therapeutic_chunk(
+                            interaction_id=interaction_id,
+                            session_id=session_id,
+                            chunk=chunk
+                        )
+                        chunk_results.append(chunk_result)
+                    
+                    result["chunks_stored"] = len([r for r in chunk_results if r.get("success")])
+                    result["total_chunks"] = len(chunks)
+                    result["chunk_summary"] = self.psychological_chunker.get_chunk_summary(chunks)
+                    
+                    logger.info(f"Stored {result['chunks_stored']}/{result['total_chunks']} therapeutic chunks for interaction {interaction_id}")
+                else:
+                    result["chunks_stored"] = 0
+                    result["total_chunks"] = 0
+            
+            return result
+            
+        except Exception as e:
+            logger.error(f"Error adding interaction with chunks: {e}")
+            logger.error(traceback.format_exc())
+            return {"success": False, "error": str(e)}
+
+    @typechecked
+    def add_therapeutic_chunk(self, interaction_id: int, session_id: str, chunk: TherapeuticChunk) -> Dict[str, Any]:
+        """
+        Add a therapeutic chunk with metadata to the session_chunks table.
+        
+        Args:
+            interaction_id: ID of the parent interaction
+            session_id: Session identifier
+            chunk: TherapeuticChunk object with metadata
+            
+        Returns:
+            Dictionary with operation result
+        """
+        try:
+            # Generate embedding for the chunk text
+            embedding = get_embedding_provider().generate_embedding(chunk.text)
+            if not embedding:
+                logger.warning(f"Failed to generate embedding for chunk: {chunk.text[:50]}...")
+                embedding = [0.0] * 384  # Default dimension fallback
+            
+            # Prepare chunk metadata
+            chunk_metadata = {
+                "primary_emotion": chunk.primary_emotion,
+                "polarity": chunk.polarity,
+                "intensity": chunk.intensity,
+                "theme": chunk.theme,
+                "text_length": len(chunk.text),
+                "chunk_type": "psychological"
+            }
+            
+            # Store chunk in database
+            response = self.supabase.rpc(
+                "add_session_chunk",
+                {
+                    "p_schema_name": self.schema_name,
+                    "p_session_id": session_id,
+                    "p_interaction_id": interaction_id,
+                    "p_chunk_text": chunk.text,
+                    "p_embedding": embedding,
+                    "p_metadata": chunk_metadata
+                }
+            ).execute()
+            
+            if response.data:
+                chunk_id = response.data
+                logger.debug(f"Stored therapeutic chunk {chunk_id} for interaction {interaction_id}")
+                return {
+                    "success": True,
+                    "chunk_id": chunk_id,
+                    "metadata": chunk_metadata
+                }
+            else:
+                logger.error(f"Failed to store therapeutic chunk: {response}")
+                return {"success": False, "error": "Database insertion failed"}
+                
+        except Exception as e:
+            logger.error(f"Error adding therapeutic chunk: {e}")
+            logger.error(traceback.format_exc())
+            return {"success": False, "error": str(e)}
+
+    @typechecked
+    def get_session_chunks(self, session_id: str, emotion_filter: Optional[str] = None, theme_filter: Optional[str] = None) -> List[Dict[str, Any]]:
+        """
+        Retrieve therapeutic chunks for a session with optional filtering.
+        
+        Args:
+            session_id: Session identifier
+            emotion_filter: Optional emotion to filter by
+            theme_filter: Optional theme to filter by
+            
+        Returns:
+            List of chunk dictionaries with metadata
+        """
+        try:
+            response = self.supabase.rpc(
+                "get_session_chunks",
+                {
+                    "p_schema_name": self.schema_name,
+                    "p_session_id": session_id,
+                    "p_emotion_filter": emotion_filter,
+                    "p_theme_filter": theme_filter
+                }
+            ).execute()
+            
+            if response.data:
+                logger.debug(f"Retrieved {len(response.data)} chunks for session {session_id}")
+                return response.data
+            else:
+                return []
+                
+        except Exception as e:
+            logger.error(f"Error retrieving session chunks: {e}")
+            logger.error(traceback.format_exc())
+            return []
+
+    @typechecked
+    def analyze_emotional_trajectory(self, session_id: str) -> Dict[str, Any]:
+        """
+        Analyze emotional trajectory from therapeutic chunks.
+        
+        Args:
+            session_id: Session identifier
+            
+        Returns:
+            Dictionary with emotional trajectory analysis
+        """
+        try:
+            chunks = self.get_session_chunks(session_id)
+            if not chunks:
+                return {"trajectory": [], "summary": {}}
+            
+            # Extract emotional data from chunks
+            emotions = []
+            polarities = []
+            intensities = []
+            themes = []
+            timestamps = []
+            
+            for chunk in chunks:
+                metadata = chunk.get("metadata", {})
+                emotions.append(metadata.get("primary_emotion", "neutral"))
+                polarities.append(metadata.get("polarity", 0.0))
+                intensities.append(metadata.get("intensity", 0.5))
+                themes.append(metadata.get("theme", "general_support"))
+                timestamps.append(chunk.get("created_at"))
+            
+            # Calculate trajectory metrics
+            avg_polarity = sum(polarities) / len(polarities) if polarities else 0.0
+            avg_intensity = sum(intensities) / len(intensities) if intensities else 0.5
+            dominant_emotion = max(set(emotions), key=emotions.count) if emotions else "neutral"
+            dominant_theme = max(set(themes), key=themes.count) if themes else "general_support"
+            
+            # Detect emotional shifts
+            polarity_trend = "stable"
+            if len(polarities) >= 3:
+                recent_avg = sum(polarities[-3:]) / 3
+                early_avg = sum(polarities[:3]) / 3
+                if recent_avg - early_avg > 0.2:
+                    polarity_trend = "improving"
+                elif early_avg - recent_avg > 0.2:
+                    polarity_trend = "declining"
+            
+            return {
+                "trajectory": [
+                    {
+                        "timestamp": ts,
+                        "emotion": em,
+                        "polarity": pol,
+                        "intensity": intens,
+                        "theme": th
+                    }
+                    for ts, em, pol, intens, th in zip(timestamps, emotions, polarities, intensities, themes)
+                ],
+                "summary": {
+                    "total_chunks": len(chunks),
+                    "average_polarity": round(avg_polarity, 2),
+                    "average_intensity": round(avg_intensity, 2),
+                    "dominant_emotion": dominant_emotion,
+                    "dominant_theme": dominant_theme,
+                    "polarity_trend": polarity_trend,
+                    "emotion_distribution": {emotion: emotions.count(emotion) for emotion in set(emotions)},
+                    "theme_distribution": {theme: themes.count(theme) for theme in set(themes)}
+                }
+            }
+            
+        except Exception as e:
+            logger.error(f"Error analyzing emotional trajectory: {e}")
+            logger.error(traceback.format_exc())
+            return {"trajectory": [], "summary": {}}
 
     def add_interaction_rpc(self, data_point: dict, session_id: Optional[str] = None) -> bool:
         """Adds an interaction to the database using an RPC call."""
@@ -566,7 +807,7 @@ class DatabaseManager:
             logger.error("Error retrieving interaction history for user %s", user_id)
             return None
 
-        history = response.model_dump_json()
+        history = json.dumps(response.data)
         logger.info("Retrieved interaction history for user %s: %s", user_id, history)
         return history
 
@@ -2262,3 +2503,984 @@ class DatabaseManager:
         sentences = sent_tokenize(question)
         # Optionally, further split or filter sentences using a model
         return [s.strip() for s in sentences if len(s.strip()) > 2]
+
+    # Layered Memory Support Methods
+
+    def store_short_term_memory(
+        self, 
+        content: str, 
+        embedding: List[float], 
+        patient_id: str, 
+        session_id: str, 
+        metadata: Optional[Dict[str, Any]] = None
+    ) -> bool:
+        """
+        Store a memory item in short-term memory table.
+        
+        Args:
+            content: Memory content text
+            embedding: Vector embedding of the content
+            patient_id: Patient identifier
+            session_id: Session identifier
+            metadata: Optional metadata (emotion, intensity, etc.)
+            
+        Returns:
+            bool: True if storage was successful
+        """
+        try:
+            response = self.supabase.rpc(
+                "store_short_term_memory",
+                {
+                    "p_content": content,
+                    "p_embedding": embedding,
+                    "p_patient_id": patient_id,
+                    "p_session_id": session_id,
+                    "p_metadata": json.dumps(metadata or {})
+                }
+            ).execute()
+            
+            return response.data is not None
+            
+        except Exception as e:
+            logger.error(f"Error storing short-term memory: {e}")
+            return False
+
+    def retrieve_short_term_memories(
+        self, 
+        query_embedding: List[float], 
+        patient_id: str, 
+        session_id: Optional[str] = None,
+        limit: int = 10,
+        similarity_threshold: float = 0.7
+    ) -> List[Dict[str, Any]]:
+        """
+        Retrieve memories from short-term memory table.
+        
+        Args:
+            query_embedding: Query vector for similarity search
+            patient_id: Patient identifier
+            session_id: Optional session filter
+            limit: Maximum number of results
+            similarity_threshold: Minimum similarity score
+            
+        Returns:
+            List of memory items with similarity scores
+        """
+        try:
+            response = self.supabase.rpc(
+                "retrieve_short_term_memories",
+                {
+                    "p_query_embedding": query_embedding,
+                    "p_patient_id": patient_id,
+                    "p_session_id": session_id,
+                    "p_limit": limit,
+                    "p_similarity_threshold": similarity_threshold
+                }
+            ).execute()
+            
+            return response.data or []
+            
+        except Exception as e:
+            logger.error(f"Error retrieving short-term memories: {e}")
+            return []
+
+    def store_medium_term_memory(
+        self, 
+        content: str, 
+        embedding: List[float], 
+        patient_id: str, 
+        week_start: str,
+        metadata: Optional[Dict[str, Any]] = None
+    ) -> bool:
+        """
+        Store a memory item in medium-term memory table.
+        
+        Args:
+            content: Weekly summary content
+            embedding: Vector embedding of the summary
+            patient_id: Patient identifier
+            week_start: ISO date string for week start
+            metadata: Optional metadata (cluster info, emotions, etc.)
+            
+        Returns:
+            bool: True if storage was successful
+        """
+        try:
+            response = self.supabase.rpc(
+                "store_medium_term_memory",
+                {
+                    "p_content": content,
+                    "p_embedding": embedding,
+                    "p_patient_id": patient_id,
+                    "p_week_start": week_start,
+                    "p_metadata": json.dumps(metadata or {})
+                }
+            ).execute()
+            
+            return response.data is not None
+            
+        except Exception as e:
+            logger.error(f"Error storing medium-term memory: {e}")
+            return False
+
+    def retrieve_medium_term_memories(
+        self, 
+        query_embedding: List[float], 
+        patient_id: str, 
+        limit: int = 5,
+        similarity_threshold: float = 0.6
+    ) -> List[Dict[str, Any]]:
+        """
+        Retrieve memories from medium-term memory table.
+        
+        Args:
+            query_embedding: Query vector for similarity search
+            patient_id: Patient identifier
+            limit: Maximum number of results
+            similarity_threshold: Minimum similarity score
+            
+        Returns:
+            List of weekly memory summaries with similarity scores
+        """
+        try:
+            response = self.supabase.rpc(
+                "retrieve_medium_term_memories",
+                {
+                    "p_query_embedding": query_embedding,
+                    "p_patient_id": patient_id,
+                    "p_limit": limit,
+                    "p_similarity_threshold": similarity_threshold
+                }
+            ).execute()
+            
+            return response.data or []
+            
+        except Exception as e:
+            logger.error(f"Error retrieving medium-term memories: {e}")
+            return []
+
+    def store_long_term_memory(
+        self, 
+        content: str, 
+        embedding: List[float], 
+        patient_id: str, 
+        theme_category: str,
+        metadata: Optional[Dict[str, Any]] = None
+    ) -> bool:
+        """
+        Store a memory item in long-term memory table.
+        
+        Args:
+            content: Theme summary content
+            embedding: Vector embedding of the theme
+            patient_id: Patient identifier
+            theme_category: Categorized theme name
+            metadata: Optional metadata (persistence score, occurrences, etc.)
+            
+        Returns:
+            bool: True if storage was successful
+        """
+        try:
+            response = self.supabase.rpc(
+                "store_long_term_memory",
+                {
+                    "p_content": content,
+                    "p_embedding": embedding,
+                    "p_patient_id": patient_id,
+                    "p_theme_category": theme_category,
+                    "p_metadata": json.dumps(metadata or {})
+                }
+            ).execute()
+            
+            return response.data is not None
+            
+        except Exception as e:
+            logger.error(f"Error storing long-term memory: {e}")
+            return False
+
+    def retrieve_long_term_memories(
+        self, 
+        query_embedding: List[float], 
+        patient_id: str, 
+        limit: int = 3,
+        similarity_threshold: float = 0.5
+    ) -> List[Dict[str, Any]]:
+        """
+        Retrieve memories from long-term memory table.
+        
+        Args:
+            query_embedding: Query vector for similarity search
+            patient_id: Patient identifier
+            limit: Maximum number of results
+            similarity_threshold: Minimum similarity score
+            
+        Returns:
+            List of long-term themes with similarity scores
+        """
+        try:
+            response = self.supabase.rpc(
+                "retrieve_long_term_memories",
+                {
+                    "p_query_embedding": query_embedding,
+                    "p_patient_id": patient_id,
+                    "p_limit": limit,
+                    "p_similarity_threshold": similarity_threshold
+                }
+            ).execute()
+            
+            return response.data or []
+            
+        except Exception as e:
+            logger.error(f"Error retrieving long-term memories: {e}")
+            return []
+
+    def get_session_chunks_for_consolidation(
+        self, 
+        patient_id: str, 
+        days_back: int = 7
+    ) -> List[Dict[str, Any]]:
+        """
+        Get session chunks for memory consolidation.
+        
+        Args:
+            patient_id: Patient identifier
+            days_back: Number of days to look back
+            
+        Returns:
+            List of session chunks with embeddings and metadata
+        """
+        try:
+            response = self.supabase.rpc(
+                "get_session_chunks_for_consolidation",
+                {
+                    "p_patient_id": patient_id,
+                    "p_days_back": days_back
+                }
+            ).execute()
+            
+            return response.data or []
+            
+        except Exception as e:
+            logger.error(f"Error getting session chunks for consolidation: {e}")
+            return []
+
+    def get_weekly_summaries_for_themes(
+        self, 
+        patient_id: str, 
+        weeks_back: int = 4
+    ) -> List[Dict[str, Any]]:
+        """
+        Get weekly summaries for theme consolidation.
+        
+        Args:
+            patient_id: Patient identifier
+            weeks_back: Number of weeks to look back
+            
+        Returns:
+            List of weekly summaries with embeddings and metadata
+        """
+        try:
+            response = self.supabase.rpc(
+                "get_weekly_summaries_for_themes",
+                {
+                    "p_patient_id": patient_id,
+                    "p_weeks_back": weeks_back
+                }
+            ).execute()
+            
+            return response.data or []
+            
+        except Exception as e:
+            logger.error(f"Error getting weekly summaries for themes: {e}")
+            return []
+
+    def delete_expired_short_term_memories(
+        self, 
+        patient_id: str, 
+        days_to_keep: int = 7
+    ) -> bool:
+        """
+        Delete expired short-term memories.
+        
+        Args:
+            patient_id: Patient identifier
+            days_to_keep: Number of days to keep memories
+            
+        Returns:
+            bool: True if deletion was successful
+        """
+        try:
+            response = self.supabase.rpc(
+                "delete_expired_short_term_memories",
+                {
+                    "p_patient_id": patient_id,
+                    "p_days_to_keep": days_to_keep
+                }
+            ).execute()
+            
+            return response.data is not None
+            
+        except Exception as e:
+            logger.error(f"Error deleting expired short-term memories: {e}")
+            return False
+
+    # Security and Policy Integration Methods
+
+    def initialize_security_policies(self) -> bool:
+        """
+        Initialize database security policies and roles.
+        
+        Returns:
+            bool: True if initialization was successful
+        """
+        try:
+            return self.policy_manager.initialize_roles_and_policies()
+        except Exception as e:
+            logger.error(f"Error initializing security policies: {e}")
+            return False
+
+    def set_user_role(self, user_id: str, role: UserRole) -> bool:
+        """
+        Set the role for a specific user.
+        
+        Args:
+            user_id: User identifier
+            role: UserRole enum value
+            
+        Returns:
+            bool: True if role was set successfully
+        """
+        try:
+            return self.policy_manager.set_user_role(user_id, role)
+        except Exception as e:
+            logger.error(f"Error setting user role: {e}")
+            return False
+
+    def assign_patient_to_psychologist(self, patient_id: str, psychologist_id: str) -> bool:
+        """
+        Create an assignment between a patient and psychologist.
+        
+        Args:
+            patient_id: Patient identifier
+            psychologist_id: Psychologist identifier
+            
+        Returns:
+            bool: True if assignment was created successfully
+        """
+        try:
+            return self.policy_manager.assign_patient_to_psychologist(patient_id, psychologist_id)
+        except Exception as e:
+            logger.error(f"Error assigning patient to psychologist: {e}")
+            return False
+
+    def remove_patient_assignment(self, patient_id: str, psychologist_id: str) -> bool:
+        """
+        Remove an assignment between a patient and psychologist.
+        
+        Args:
+            patient_id: Patient identifier
+            psychologist_id: Psychologist identifier
+            
+        Returns:
+            bool: True if assignment was removed successfully
+        """
+        try:
+            return self.policy_manager.remove_patient_assignment(patient_id, psychologist_id)
+        except Exception as e:
+            logger.error(f"Error removing patient assignment: {e}")
+            return False
+
+    def validate_access(self, user_id: str, target_patient_id: str, operation: str = "SELECT") -> bool:
+        """
+        Validate if a user has access to a patient's data.
+        
+        Args:
+            user_id: User requesting access
+            target_patient_id: Patient whose data is being accessed
+            operation: Type of operation (SELECT, INSERT, UPDATE, DELETE)
+            
+        Returns:
+            bool: True if access is allowed
+        """
+        try:
+            return self.policy_manager.validate_access(user_id, target_patient_id, operation)
+        except Exception as e:
+            logger.error(f"Error validating access: {e}")
+            return False
+
+    def set_encryption_key(self, encryption_key: str) -> None:
+        """
+        Set the encryption key for sensitive data operations.
+        
+        Args:
+            encryption_key: Encryption key for clinical data
+        """
+        self._encryption_key = encryption_key
+
+    def store_encrypted_session_chunk(
+        self,
+        patient_id: str,
+        session_id: str,
+        content: str,
+        embedding: List[float],
+        metadata: Optional[Dict[str, Any]] = None
+    ) -> Optional[str]:
+        """
+        Store a session chunk with encrypted content.
+        
+        Args:
+            patient_id: Patient identifier
+            session_id: Session identifier
+            content: Chunk content to encrypt
+            embedding: Vector embedding
+            metadata: Optional metadata
+            
+        Returns:
+            Chunk ID if successful, None otherwise
+        """
+        try:
+            if not self._encryption_key:
+                logger.error("Encryption key not set for secure storage")
+                return None
+
+            # Validate access
+            if not self.validate_access(self.user_id, patient_id, "INSERT"):
+                logger.error(f"Access denied for user {self.user_id} to store data for patient {patient_id}")
+                self.policy_manager.audit_access_attempt(
+                    self.user_id, patient_id, "INSERT", "session_chunks", False
+                )
+                return None
+
+            response = self.supabase.rpc(
+                "store_encrypted_session_chunk",
+                {
+                    "p_patient_id": patient_id,
+                    "p_session_id": session_id,
+                    "p_content": content,
+                    "p_embedding": embedding,
+                    "p_metadata": json.dumps(metadata or {}),
+                    "p_encryption_key": self._encryption_key
+                }
+            ).execute()
+
+            if response.data:
+                chunk_id = response.data
+                self.policy_manager.audit_access_attempt(
+                    self.user_id, patient_id, "INSERT", "session_chunks", True
+                )
+                return str(chunk_id)
+            return None
+
+        except Exception as e:
+            logger.error(f"Error storing encrypted session chunk: {e}")
+            self.policy_manager.audit_access_attempt(
+                self.user_id, patient_id, "INSERT", "session_chunks", False
+            )
+            return None
+
+    def retrieve_decrypted_session_chunk(
+        self,
+        chunk_id: str,
+        patient_id: str
+    ) -> Optional[Dict[str, Any]]:
+        """
+        Retrieve and decrypt a session chunk.
+        
+        Args:
+            chunk_id: Chunk identifier
+            patient_id: Patient identifier for access validation
+            
+        Returns:
+            Decrypted chunk data or None if access denied/error
+        """
+        try:
+            if not self._encryption_key:
+                logger.error("Encryption key not set for secure retrieval")
+                return None
+
+            # Validate access
+            if not self.validate_access(self.user_id, patient_id, "SELECT"):
+                logger.error(f"Access denied for user {self.user_id} to retrieve data for patient {patient_id}")
+                self.policy_manager.audit_access_attempt(
+                    self.user_id, patient_id, "SELECT", "session_chunks", False
+                )
+                return None
+
+            response = self.supabase.rpc(
+                "retrieve_decrypted_session_chunk",
+                {
+                    "p_chunk_id": chunk_id,
+                    "p_encryption_key": self._encryption_key
+                }
+            ).execute()
+
+            if response.data and len(response.data) > 0:
+                self.policy_manager.audit_access_attempt(
+                    self.user_id, patient_id, "SELECT", "session_chunks", True
+                )
+                return response.data[0]
+            return None
+
+        except Exception as e:
+            logger.error(f"Error retrieving decrypted session chunk: {e}")
+            self.policy_manager.audit_access_attempt(
+                self.user_id, patient_id, "SELECT", "session_chunks", False
+            )
+            return None
+
+    def get_user_role(self, user_id: str) -> Optional[UserRole]:
+        """
+        Get the role for a specific user.
+        
+        Args:
+            user_id: User identifier
+            
+        Returns:
+            UserRole or None if not found
+        """
+        try:
+            return self.policy_manager.get_user_role(user_id)
+        except Exception as e:
+            logger.error(f"Error getting user role: {e}")
+            return None
+
+    def get_psychologist_patients(self, psychologist_id: str) -> List[str]:
+        """
+        Get list of patients assigned to a psychologist.
+        
+        Args:
+            psychologist_id: Psychologist identifier
+            
+        Returns:
+            List of patient IDs
+        """
+        try:
+            return self.policy_manager.get_psychologist_patients(psychologist_id)
+        except Exception as e:
+            logger.error(f"Error getting psychologist patients: {e}")
+            return []
+
+    def audit_access_attempt(
+        self,
+        user_id: str,
+        target_patient_id: str,
+        operation: str,
+        table_name: str,
+        success: bool
+    ) -> bool:
+        """
+        Log access attempts for audit purposes.
+        
+        Args:
+            user_id: User attempting access
+            target_patient_id: Target patient ID
+            operation: Operation attempted
+            table_name: Table being accessed
+            success: Whether access was granted
+            
+        Returns:
+            bool: True if audit log was created
+        """
+        try:
+            return self.policy_manager.audit_access_attempt(
+                user_id, target_patient_id, operation, table_name, success
+            )
+        except Exception as e:
+            logger.error(f"Error creating audit log: {e}")
+            return False
+
+    # Emotional Trajectory Methods
+
+    def record_emotion_trajectory_point(
+        self,
+        patient_id: str,
+        session_id: str,
+        chunk_metadata: Dict[str, Any],
+        chunk_id: Optional[str] = None
+    ) -> Optional[str]:
+        """
+        Record an emotional trajectory data point.
+        
+        Args:
+            patient_id: Patient identifier
+            session_id: Session identifier
+            chunk_metadata: Metadata containing emotion, polarity, intensity, theme
+            chunk_id: Optional chunk identifier
+            
+        Returns:
+            Trajectory point ID if successful, None otherwise
+        """
+        try:
+            # Validate access
+            if not self.validate_access(self.user_id, patient_id, "INSERT"):
+                logger.error(f"Access denied for emotion trajectory recording: user {self.user_id}, patient {patient_id}")
+                self.audit_access_attempt(self.user_id, patient_id, "INSERT", "emotion_trajectory", False)
+                return None
+
+            # Extract emotional data
+            emotion = chunk_metadata.get("primary_emotion", "neutral")
+            intensity = float(chunk_metadata.get("intensity", 0.0))
+            polarity = float(chunk_metadata.get("polarity", 0.0))
+            theme = chunk_metadata.get("theme")
+
+            response = self.supabase.rpc(
+                "store_emotion_trajectory_point",
+                {
+                    "p_patient_id": patient_id,
+                    "p_timestamp": datetime.now().isoformat(),
+                    "p_emotion": emotion,
+                    "p_intensity": intensity,
+                    "p_polarity": polarity,
+                    "p_session_id": session_id,
+                    "p_chunk_id": chunk_id,
+                    "p_theme": theme
+                }
+            ).execute()
+
+            if response.data:
+                self.audit_access_attempt(self.user_id, patient_id, "INSERT", "emotion_trajectory", True)
+                logger.info(f"Recorded emotion trajectory point for patient {patient_id}")
+                return response.data
+            
+            return None
+
+        except Exception as e:
+            logger.error(f"Error recording emotion trajectory point: {e}")
+            self.audit_access_attempt(self.user_id, patient_id, "INSERT", "emotion_trajectory", False)
+            return None
+
+    def get_emotion_trajectory_data(
+        self,
+        patient_id: str,
+        start_date: datetime,
+        end_date: datetime
+    ) -> List[Dict[str, Any]]:
+        """
+        Retrieve emotional trajectory data for a patient within a date range.
+        
+        Args:
+            patient_id: Patient identifier
+            start_date: Start date for trajectory data
+            end_date: End date for trajectory data
+            
+        Returns:
+            List of trajectory data points
+        """
+        try:
+            # Validate access
+            if not self.validate_access(self.user_id, patient_id, "SELECT"):
+                logger.error(f"Access denied for trajectory data retrieval: user {self.user_id}, patient {patient_id}")
+                self.audit_access_attempt(self.user_id, patient_id, "SELECT", "emotion_trajectory", False)
+                return []
+
+            response = self.supabase.rpc(
+                "get_emotion_trajectory_data",
+                {
+                    "p_patient_id": patient_id,
+                    "p_start_date": start_date.isoformat(),
+                    "p_end_date": end_date.isoformat()
+                }
+            ).execute()
+
+            if response.data:
+                self.audit_access_attempt(self.user_id, patient_id, "SELECT", "emotion_trajectory", True)
+                return response.data
+            
+            return []
+
+        except Exception as e:
+            logger.error(f"Error retrieving emotion trajectory data: {e}")
+            self.audit_access_attempt(self.user_id, patient_id, "SELECT", "emotion_trajectory", False)
+            return []
+
+    def create_clinical_alert(
+        self,
+        patient_id: str,
+        alert_type: str,
+        severity: str,
+        message: str,
+        metadata: Optional[Dict[str, Any]] = None
+    ) -> Optional[str]:
+        """
+        Create a clinical alert for concerning emotional patterns.
+        
+        Args:
+            patient_id: Patient identifier
+            alert_type: Type of alert
+            severity: Alert severity level
+            message: Alert message
+            metadata: Additional alert metadata
+            
+        Returns:
+            Alert ID if successful, None otherwise
+        """
+        try:
+            # Validate access
+            if not self.validate_access(self.user_id, patient_id, "INSERT"):
+                logger.error(f"Access denied for clinical alert creation: user {self.user_id}, patient {patient_id}")
+                self.audit_access_attempt(self.user_id, patient_id, "INSERT", "clinical_alerts", False)
+                return None
+
+            response = self.supabase.rpc(
+                "create_clinical_alert",
+                {
+                    "p_patient_id": patient_id,
+                    "p_alert_type": alert_type,
+                    "p_severity": severity,
+                    "p_message": message,
+                    "p_metadata": json.dumps(metadata or {})
+                }
+            ).execute()
+
+            if response.data:
+                self.audit_access_attempt(self.user_id, patient_id, "INSERT", "clinical_alerts", True)
+                logger.warning(f"Created {severity} clinical alert for patient {patient_id}: {alert_type}")
+                return response.data
+            
+            return None
+
+        except Exception as e:
+            logger.error(f"Error creating clinical alert: {e}")
+            self.audit_access_attempt(self.user_id, patient_id, "INSERT", "clinical_alerts", False)
+            return None
+
+    def get_active_clinical_alerts(
+        self,
+        patient_id: Optional[str] = None,
+        severity: Optional[str] = None
+    ) -> List[Dict[str, Any]]:
+        """
+        Get active clinical alerts, optionally filtered by patient and severity.
+        
+        Args:
+            patient_id: Optional patient filter
+            severity: Optional severity filter
+            
+        Returns:
+            List of active clinical alerts
+        """
+        try:
+            response = self.supabase.rpc(
+                "get_active_clinical_alerts",
+                {
+                    "p_patient_id": patient_id,
+                    "p_severity": severity
+                }
+            ).execute()
+
+            if response.data:
+                # Filter alerts based on user access
+                accessible_alerts = []
+                for alert in response.data:
+                    if self.validate_access(self.user_id, alert["patient_id"], "SELECT"):
+                        accessible_alerts.append(alert)
+                
+                return accessible_alerts
+            
+            return []
+
+        except Exception as e:
+            logger.error(f"Error retrieving clinical alerts: {e}")
+            return []
+
+    def acknowledge_clinical_alert(
+        self,
+        alert_id: str,
+        acknowledged_by: Optional[str] = None
+    ) -> bool:
+        """
+        Acknowledge a clinical alert.
+        
+        Args:
+            alert_id: Alert identifier
+            acknowledged_by: User acknowledging the alert
+            
+        Returns:
+            True if acknowledgment was successful
+        """
+        try:
+            user_id = acknowledged_by or self.user_id
+            
+            response = self.supabase.rpc(
+                "acknowledge_clinical_alert",
+                {
+                    "p_alert_id": alert_id,
+                    "p_acknowledged_by": user_id
+                }
+            ).execute()
+
+            if response.data:
+                logger.info(f"Clinical alert {alert_id} acknowledged by user {user_id}")
+                return True
+            
+            return False
+
+        except Exception as e:
+            logger.error(f"Error acknowledging clinical alert: {e}")
+            return False
+
+    # Clinical Report Helper Methods
+
+    def get_themed_chunks_for_analysis(
+        self,
+        patient_id: str,
+        start_date: datetime,
+        end_date: datetime
+    ) -> List[Dict[str, Any]]:
+        """
+        Retrieve session chunks with theme metadata for report analysis.
+        
+        Args:
+            patient_id: Patient identifier
+            start_date: Start date for analysis period
+            end_date: End date for analysis period
+            
+        Returns:
+            List of session chunks with embeddings and metadata
+        """
+        try:
+            # Validate access
+            if not self.validate_access(self.user_id, patient_id, "SELECT"):
+                logger.error(f"Access denied for themed chunks retrieval: user {self.user_id}, patient {patient_id}")
+                self.audit_access_attempt(self.user_id, patient_id, "SELECT", "session_chunks", False)
+                return []
+
+            response = self.supabase.rpc(
+                "get_themed_chunks_for_analysis",
+                {
+                    "p_patient_id": patient_id,
+                    "p_start_date": start_date.isoformat(),
+                    "p_end_date": end_date.isoformat()
+                }
+            ).execute()
+
+            if response.data:
+                self.audit_access_attempt(self.user_id, patient_id, "SELECT", "session_chunks", True)
+                return response.data
+            
+            return []
+
+        except Exception as e:
+            logger.error(f"Error retrieving themed chunks for analysis: {e}")
+            self.audit_access_attempt(self.user_id, patient_id, "SELECT", "session_chunks", False)
+            return []
+
+    def count_patient_data_points(
+        self,
+        patient_id: str,
+        start_date: datetime,
+        end_date: datetime
+    ) -> int:
+        """
+        Count total data points for a patient in the specified period.
+        
+        Args:
+            patient_id: Patient identifier
+            start_date: Start date for counting
+            end_date: End date for counting
+            
+        Returns:
+            Number of data points
+        """
+        try:
+            # Validate access
+            if not self.validate_access(self.user_id, patient_id, "SELECT"):
+                logger.error(f"Access denied for data point counting: user {self.user_id}, patient {patient_id}")
+                return 0
+
+            response = self.supabase.rpc(
+                "count_patient_data_points",
+                {
+                    "p_patient_id": patient_id,
+                    "p_start_date": start_date.isoformat(),
+                    "p_end_date": end_date.isoformat()
+                }
+            ).execute()
+
+            if response.data and len(response.data) > 0:
+                return response.data[0].get('count', 0)
+            
+            return 0
+
+        except Exception as e:
+            logger.error(f"Error counting patient data points: {e}")
+            return 0
+
+    def count_patient_sessions(
+        self,
+        patient_id: str,
+        start_date: datetime,
+        end_date: datetime
+    ) -> int:
+        """
+        Count sessions for a patient in the specified period.
+        
+        Args:
+            patient_id: Patient identifier
+            start_date: Start date for counting
+            end_date: End date for counting
+            
+        Returns:
+            Number of sessions
+        """
+        try:
+            # Validate access
+            if not self.validate_access(self.user_id, patient_id, "SELECT"):
+                logger.error(f"Access denied for session counting: user {self.user_id}, patient {patient_id}")
+                return 0
+
+            response = self.supabase.rpc(
+                "count_patient_sessions",
+                {
+                    "p_patient_id": patient_id,
+                    "p_start_date": start_date.isoformat(),
+                    "p_end_date": end_date.isoformat()
+                }
+            ).execute()
+
+            if response.data and len(response.data) > 0:
+                return response.data[0].get('count', 0)
+            
+            return 0
+
+        except Exception as e:
+            logger.error(f"Error counting patient sessions: {e}")
+            return 0
+
+    def get_consolidated_patient_metrics(
+        self,
+        patient_id: str,
+        timeframe: str = "month"
+    ) -> Dict[str, Any]:
+        """
+        Get consolidated metrics for patient reporting.
+        
+        Args:
+            patient_id: Patient identifier
+            timeframe: Analysis timeframe
+            
+        Returns:
+            Dictionary with consolidated patient metrics
+        """
+        try:
+            # Validate access
+            if not self.validate_access(self.user_id, patient_id, "SELECT"):
+                logger.error(f"Access denied for consolidated metrics: user {self.user_id}, patient {patient_id}")
+                return {}
+
+            response = self.supabase.rpc(
+                "get_consolidated_patient_metrics",
+                {
+                    "p_patient_id": patient_id,
+                    "p_timeframe": timeframe
+                }
+            ).execute()
+
+            if response.data and len(response.data) > 0:
+                return response.data[0]
+            
+            return {}
+
+        except Exception as e:
+            logger.error(f"Error retrieving consolidated patient metrics: {e}")
+            return {}

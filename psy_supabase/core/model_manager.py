@@ -28,21 +28,36 @@ complexity of model loading and memory management.
 import gc
 import os
 import traceback
-from typing import Any, Callable, ClassVar, Dict, List, Optional, Tuple, Union
+from typing import Any, Dict, List, Optional, Union, Tuple, ClassVar
+
+from transformers import AutoTokenizer, AutoModelForCausalLM, AutoModelForSequenceClassification
 
 import torch
-import torch.cuda
 from sentence_transformers import SentenceTransformer
-from transformers import AutoModelForCausalLM, AutoModelForSequenceClassification, AutoTokenizer
+from transformers import (
+    AutoModel,
+    AutoModelForCausalLM,
+    AutoTokenizer,
+    BitsAndBytesConfig,
+    pipeline,
+)
 from typeguard import typechecked
 
 from psy_supabase import get_package_logger
-from psy_supabase.config import DEFAULT_EMBEDDING_MODEL, TEXT_GENERATING_MODEL, TOXIC_CLASSIFICATION_MODEL
+from psy_supabase.config import (
+    DEFAULT_EMBEDDING_MODEL,
+    TEXT_GENERATING_MODEL,
+    TOXICITY_MODEL,
+)
+from psy_supabase.nlp.preprocessor import PsychologicalTextChunker, TherapeuticChunk
 from psy_supabase.core.text_generator import TextGenerator
 from psy_supabase.utilities.common import get_models_dir
 from psy_supabase.utilities.common import load_toxicity_model as common_load_toxicity_model
 from psy_supabase.utilities.utils import download_and_store_model
-
+from psy_supabase.memory.memory_interface import MemoryLayerManager, MemoryItem, RetrievalResult
+from psy_supabase.memory.short_term import ShortTermMemory
+from psy_supabase.memory.medium_term import MediumTermMemory
+from psy_supabase.memory.long_term import LongTermMemory
 
 # Create a model manager class to handle loading/unloading
 class ModelManager:
@@ -88,34 +103,40 @@ class ModelManager:
         if cls._instance is None:
             cls._instance = cls(model_name, device, quantize)
         return cls._instance
-
-    def __init__(self, model_name: str, device: Optional[str] = None, quantize: bool = False) -> None:
+        
+class ModelManager:
+    def __init__(self, model_name: str = TEXT_GENERATING_MODEL, device: Optional[str] = None, quantize: bool = False):
+        """
+        Initialize ModelManager with specified model and device.
+        """
         self.model_name = model_name
-        self.logger = get_package_logger(__name__)
-        self.MODELS_DIR = get_models_dir()
-        self.preferred_device = self._get_preferred_device(device)
+        self.device = device
         self.quantize = quantize
+        self.logger = get_package_logger(__name__)
+        self.model = None
+        self.tokenizer = None
+        self.sentence_transformer = None
+        self.toxicity_classifier = None
+        self.preferred_device = self._determine_device()
+        self.MODELS_DIR = os.path.join(os.path.expanduser("~"), ".cache", "psy_supabase_models")
+        # … resto igual …
 
-        # Download and store main generation model
-        self.generation_model_path = self._download_if_needed(model_name, AutoModelForCausalLM, "generation")
-
-        # Download and store embedding model (sentence-transformers)
-        self.embedding_model_path = self._download_if_needed(DEFAULT_EMBEDDING_MODEL, SentenceTransformer, "embedding")
-
-        # Download and store toxicity model (customize as needed)
-        self.toxicity_model_path = self._download_if_needed(
-            TOXIC_CLASSIFICATION_MODEL, AutoModelForCausalLM, "toxicity"
-        )
-
-        # Now load models from local paths
-        self.generator = TextGenerator(self.generation_model_path, self.preferred_device, quantize=self.quantize)
-        self.sentence_transformer = SentenceTransformer(self.embedding_model_path)
-        self.toxicity_model = AutoModelForCausalLM.from_pretrained(self.toxicity_model_path)
-        self.toxicity_tokenizer = AutoTokenizer.from_pretrained(self.toxicity_model_path)
+    def _determine_device(self) -> str:
+        """
+        Detecta automáticamente si usar GPU o CPU.
+        """
+        try:
+            if torch.cuda.is_available():
+                return "cuda"
+            return "cpu"
+        except Exception as e:
+            self.logger.warning(f"Error detecting device, defaulting to CPU: {e}")
+            return "cpu"
 
     def _get_preferred_device(self, device: Optional[str]) -> str:
         """Get preferred device using CUDA_CONFIG."""
         from ..config import CUDA_CONFIG
+        # … resto igual …
 
         if device is not None:
             return device
@@ -230,7 +251,6 @@ class ModelManager:
 
         return self.generator
 
-    @typechecked
     def load_toxicity_model(
         self,
     ) -> Tuple[Union[AutoModelForCausalLM, AutoModelForSequenceClassification], AutoTokenizer]:
@@ -308,22 +328,119 @@ class ModelManager:
                 reserved = torch.cuda.memory_reserved() / (1024**3)
                 self.logger.info("After moving to CPU: %.2fGB allocated, %.2fGB reserved", allocated, reserved)
 
-    def generate_embedding(self, text: str) -> Optional[List[float]]:
+    def generate_embedding(self, text: str, use_psychological_chunking: bool = None) -> Optional[List[float]]:
         """
-        Generate embedding vector for text using the main model.
-        Uses the loaded model's hidden states for embedding generation.
+        Generate an embedding for the given text using the loaded model.
+
+        Args:
+            text: Text to generate embedding for
+            use_psychological_chunking: Whether to use psychological chunking (None uses default)
+
+        Returns:
+            Embedding vector as a list of floats, or None if generation fails
+        """
+        if not text or not text.strip():
+            return None
+        
+        # Determine if we should use psychological chunking
+        use_chunking = use_psychological_chunking if use_psychological_chunking is not None else self._use_psychological_chunking
+        
+        # Process text with psychological chunking if enabled
+        processed_text = text
+        if use_chunking:
+            chunks = self._get_psychological_chunks(text)
+            if chunks:
+                # Combine chunks back into text for embedding
+                chunk_texts = [chunk.text for chunk in chunks]
+                processed_text = " ".join(chunk_texts)
+                self.logger.debug(f"Processed text with {len(chunks)} psychological chunks")
+
+        try:
+            # First try with sentence transformer (more efficient)
+            embedding = self.generate_embedding_with_sentence_transformer(processed_text)
+            if embedding is not None:
+                return embedding
+
+            # Fallback to main model if sentence transformer fails
+            self.logger.warning("Sentence transformer failed, falling back to main model")
+            return self._generate_embedding_with_main_model(processed_text)
+
+        except Exception as e:
+            self.logger.error("Error generating embedding: %s", e)
+            self.logger.error(traceback.format_exc())
+            return None
+
+    def generate_embedding_with_sentence_transformer(self, text: str) -> Optional[List[float]]:
+        """
+        Generate an embedding using sentence-transformers as a fallback.
 
         Args:
             text: Text to generate embedding for
 
         Returns:
-            List of floats representing the embedding vector or None if failed
+            Embedding vector as a list of floats, or None if generation fails
         """
-        if not text or not text.strip():
-            # Return zero vector of appropriate dimension
-            self.logger.warning("Empty text provided for embedding")
-            return [0.0] * 2048  # Default dimension, will be adjusted for actual models
+        try:
+            # Initialize sentence transformer if needed
+            if self.sentence_transformer is None:
+                os.makedirs(self.MODELS_DIR, exist_ok=True)
 
+                # Use config model name
+                st_model_name = DEFAULT_EMBEDDING_MODEL.split("/")[-1]
+                local_path = os.path.join(self.MODELS_DIR, f"sentence-transformers_{st_model_name}")
+
+                if os.path.exists(local_path) and os.path.isdir(local_path) and len(os.listdir(local_path)) > 0:
+                    self.logger.info("Loading SentenceTransformer from local path: %s", local_path)
+                    self.sentence_transformer = SentenceTransformer(local_path)
+                else:
+                    self.logger.info("Downloading SentenceTransformer to %s", local_path)
+                    os.makedirs(local_path, exist_ok=True)
+
+                    # Use config model
+                    self.sentence_transformer = SentenceTransformer(DEFAULT_EMBEDDING_MODEL)
+                    self.sentence_transformer.save(local_path)
+                    self.logger.info("SentenceTransformer saved to %s", local_path)
+
+            # Move to the right device
+            if self.preferred_device == "cuda" and torch.cuda.is_available():
+                self.sentence_transformer = self.sentence_transformer.to(self.preferred_device)
+
+            # Get embedding dimension
+            embedding_dim = self.sentence_transformer.get_sentence_embedding_dimension()
+            if embedding_dim is None:
+                embedding_dim = 1536
+
+            # Process texts (replace empty with spaces to avoid errors)
+            final_texts = [text if text and text.strip() else " " for text in [text]]
+
+            # Generate embeddings in batch
+            embeddings = self.sentence_transformer.encode(final_texts)
+
+            # Format results
+            results: List[Optional[List[float]]] = []
+            for i, text in enumerate([text]):
+                if not text or not text.strip():
+                    results.append([0.0] * embedding_dim)  # Zero vector
+                else:
+                    results.append(embeddings[i].tolist())
+
+            return results[0]
+
+        except Exception as e:
+            self.logger.error("Error generating embedding with sentence transformer: %s", e)
+            self.logger.error(traceback.format_exc())
+            return None
+
+    def _generate_embedding_with_main_model(self, text: str) -> Optional[List[float]]:
+        """
+        Generate an embedding using the main model.
+
+        Args:
+            text: Text to generate embedding for
+
+        Returns:
+            Embedding vector as a list of floats, or None if generation fails
+        """
         try:
             # Use TextGenerator's embedding function if it exists
             generator: TextGenerator = self.get_generator()
@@ -364,35 +481,6 @@ class ModelManager:
         except Exception as e:
             self.logger.error("Error generating embedding with main model: %s", e)
             self.logger.error(traceback.format_exc())
-
-            # Try with sentence transformer as fallback
-            return self.generate_embedding_with_sentence_transformer(text)
-
-    def generate_embedding_with_sentence_transformer(self, text: str) -> Optional[List[float]]:
-        """
-        Generate embedding using sentence-transformers as a fallback.
-
-        Args:
-            text: Text to generate embedding for
-
-        Returns:
-            List of floats representing the embedding vector or None if failed
-        """
-        try:
-            # Initialize sentence transformer if needed
-            if self.sentence_transformer is None:
-                self.logger.info("Initializing SentenceTransformer for fallback embeddings")
-                try:
-                    # Use config model
-                    self.sentence_transformer = SentenceTransformer(DEFAULT_EMBEDDING_MODEL)
-                    if self.preferred_device == "cuda" and torch.cuda.is_available():
-                        self.sentence_transformer = self.sentence_transformer.to(self.preferred_device)
-                except ImportError:
-                    self.logger.error(
-                        "sentence-transformers not installed. Install with: pip install sentence-transformers"
-                    )
-                    return None
-
             # Generate embedding
             embedding = self.sentence_transformer.encode(text)
             return embedding.tolist()
@@ -402,7 +490,264 @@ class ModelManager:
             self.logger.error(traceback.format_exc())
             return None
 
-    def batch_generate_embeddings(self, texts: List[str]) -> List[Optional[List[float]]]:
+    def _get_psychological_chunks(self, text: str) -> List[TherapeuticChunk]:
+        """
+        Get psychological chunks for the given text.
+        
+        Args:
+            text: Text to chunk
+            
+        Returns:
+            List of therapeutic chunks with metadata
+        """
+        try:
+            # Initialize chunker if needed
+            if self._psychological_chunker is None:
+                self._psychological_chunker = PsychologicalTextChunker()
+            
+            # Get chunks
+            chunks = self._psychological_chunker.chunk_text(text)
+            return chunks
+            
+        except Exception as e:
+            self.logger.error(f"Error in psychological chunking: {e}")
+            # Fallback: return single chunk with basic metadata
+            return [TherapeuticChunk(
+                text=text,
+                primary_emotion="neutral",
+                polarity=0.0,
+                intensity=0.5,
+                theme="general_support"
+            )]
+
+    def set_psychological_chunking(self, enabled: bool):
+        """
+        Enable or disable psychological chunking for embeddings.
+        
+        Args:
+            enabled: Whether to use psychological chunking
+        """
+        self._use_psychological_chunking = enabled
+        self.logger.info(f"Psychological chunking {'enabled' if enabled else 'disabled'}")
+    
+    def setup_memory_layers(self, database_manager):
+        """
+        Set up the layered memory system with database manager.
+        
+        Args:
+            database_manager: DatabaseManager instance for memory operations
+        """
+        try:
+            self._database_manager = database_manager
+            
+            # Initialize memory layers
+            short_term = ShortTermMemory(database_manager)
+            medium_term = MediumTermMemory(database_manager)
+            long_term = LongTermMemory(database_manager)
+            
+            # Create memory layer manager
+            self._memory_layer_manager = MemoryLayerManager()
+            self._memory_layer_manager.register_layer(short_term, "short_term")
+            self._memory_layer_manager.register_layer(medium_term, "medium_term")
+            self._memory_layer_manager.register_layer(long_term, "long_term")
+            
+            self._setup_memory_layers_deferred = False
+            self.logger.info("Layered memory system initialized successfully")
+            
+        except Exception as e:
+            self.logger.error(f"Error setting up memory layers: {e}")
+            self._memory_layer_manager = None
+    
+    def retrieve_contextual_memories(
+        self, 
+        query_text: str, 
+        patient_id: str, 
+        query_context: Optional[Dict[str, Any]] = None,
+        limit: int = 10
+    ) -> List[RetrievalResult]:
+        """
+        Retrieve memories from appropriate layers based on query context.
+        
+        Args:
+            query_text: Text to search for similar memories
+            patient_id: Patient identifier
+            query_context: Context information for layer routing
+            limit: Maximum number of results to return
+            
+        Returns:
+            List[RetrievalResult]: Ranked memories from appropriate layers
+        """
+        try:
+            if not self._memory_layer_manager:
+                self.logger.warning("Memory layer manager not initialized")
+                return []
+            
+            # Generate query embedding
+            query_embedding = self.generate_embedding(query_text)
+            if not query_embedding:
+                self.logger.error("Failed to generate query embedding")
+                return []
+            
+            # Set default context if not provided
+            if query_context is None:
+                query_context = self._infer_query_context(query_text)
+            
+            # Retrieve from appropriate layers
+            results = self._memory_layer_manager.multi_layer_retrieve(
+                query_embedding=query_embedding,
+                patient_id=patient_id,
+                query_context=query_context,
+                total_limit=limit
+            )
+            
+            self.logger.info(f"Retrieved {len(results)} contextual memories for patient {patient_id}")
+            return results
+            
+        except Exception as e:
+            self.logger.error(f"Error retrieving contextual memories: {e}")
+            return []
+    
+    def store_memory_item(self, memory_item: MemoryItem, layer_type: str = "short_term") -> bool:
+        """
+        Store a memory item in the specified layer.
+        
+        Args:
+            memory_item: Memory item to store
+            layer_type: Target layer ("short_term", "medium_term", "long_term")
+            
+        Returns:
+            bool: True if storage was successful
+        """
+        try:
+            if not self._memory_layer_manager:
+                self.logger.warning("Memory layer manager not initialized")
+                return False
+            
+            # Get the appropriate layer
+            if layer_type == "short_term" and self._memory_layer_manager.short_term:
+                return self._memory_layer_manager.short_term.store(memory_item)
+            elif layer_type == "medium_term" and self._memory_layer_manager.medium_term:
+                return self._memory_layer_manager.medium_term.store(memory_item)
+            elif layer_type == "long_term" and self._memory_layer_manager.long_term:
+                return self._memory_layer_manager.long_term.store(memory_item)
+            else:
+                self.logger.error(f"Invalid or unavailable layer type: {layer_type}")
+                return False
+                
+        except Exception as e:
+            self.logger.error(f"Error storing memory item: {e}")
+            return False
+    
+    def consolidate_memories(self, patient_id: str, layer_type: str = "all") -> int:
+        """
+        Trigger memory consolidation for specified layers.
+        
+        Args:
+            patient_id: Patient identifier
+            layer_type: Layer to consolidate ("short_term", "medium_term", "long_term", "all")
+            
+        Returns:
+            int: Total number of items processed
+        """
+        try:
+            if not self._memory_layer_manager:
+                self.logger.warning("Memory layer manager not initialized")
+                return 0
+            
+            total_processed = 0
+            
+            if layer_type in ["short_term", "all"] and self._memory_layer_manager.short_term:
+                processed = self._memory_layer_manager.short_term.consolidate(patient_id)
+                total_processed += processed
+                self.logger.info(f"Short-term consolidation processed {processed} items")
+            
+            if layer_type in ["medium_term", "all"] and self._memory_layer_manager.medium_term:
+                processed = self._memory_layer_manager.medium_term.consolidate(patient_id)
+                total_processed += processed
+                self.logger.info(f"Medium-term consolidation processed {processed} items")
+            
+            if layer_type in ["long_term", "all"] and self._memory_layer_manager.long_term:
+                processed = self._memory_layer_manager.long_term.consolidate(patient_id)
+                total_processed += processed
+                self.logger.info(f"Long-term consolidation processed {processed} items")
+            
+            return total_processed
+            
+        except Exception as e:
+            self.logger.error(f"Error consolidating memories: {e}")
+            return 0
+    
+    def get_memory_statistics(self, patient_id: str) -> Dict[str, Any]:
+        """
+        Get comprehensive memory statistics across all layers.
+        
+        Args:
+            patient_id: Patient identifier
+            
+        Returns:
+            Dict[str, Any]: Statistics from all memory layers
+        """
+        try:
+            if not self._memory_layer_manager:
+                return {"error": "Memory layer manager not initialized"}
+            
+            stats = {
+                "patient_id": patient_id,
+                "layers": {}
+            }
+            
+            # Get stats from each layer
+            if self._memory_layer_manager.short_term:
+                stats["layers"]["short_term"] = self._memory_layer_manager.short_term.get_memory_stats(patient_id)
+            
+            if self._memory_layer_manager.medium_term:
+                stats["layers"]["medium_term"] = self._memory_layer_manager.medium_term.get_memory_stats(patient_id)
+            
+            if self._memory_layer_manager.long_term:
+                stats["layers"]["long_term"] = self._memory_layer_manager.long_term.get_memory_stats(patient_id)
+            
+            return stats
+            
+        except Exception as e:
+            self.logger.error(f"Error getting memory statistics: {e}")
+            return {"error": str(e)}
+    
+    def _infer_query_context(self, query_text: str) -> Dict[str, Any]:
+        """
+        Infer query context from the text content.
+        
+        Args:
+            query_text: Query text to analyze
+            
+        Returns:
+            Dict[str, Any]: Inferred context information
+        """
+        context = {
+            "session_focused": False,
+            "pattern_detection": False,
+            "longitudinal": False
+        }
+        
+        query_lower = query_text.lower()
+        
+        # Session-focused queries
+        session_keywords = ["hoy", "ahora", "actual", "presente", "esta sesión", "reciente"]
+        if any(keyword in query_lower for keyword in session_keywords):
+            context["session_focused"] = True
+        
+        # Pattern detection queries
+        pattern_keywords = ["patrón", "tendencia", "frecuente", "repetir", "semanal", "últimas semanas"]
+        if any(keyword in query_lower for keyword in pattern_keywords):
+            context["pattern_detection"] = True
+        
+        # Longitudinal queries
+        longitudinal_keywords = ["historial", "siempre", "desde hace", "meses", "años", "evolución", "progreso"]
+        if any(keyword in query_lower for keyword in longitudinal_keywords):
+            context["longitudinal"] = True
+        
+        return context
+
+    def batch_generate_embeddings(self, texts: List[str], use_psychological_chunking: bool = None) -> List[Optional[List[float]]]:
         """
         Generate embeddings for a batch of texts.
         For large batches, uses sentence-transformers which is more efficient.
@@ -410,15 +755,37 @@ class ModelManager:
 
         Args:
             texts: List of texts to generate embeddings for
+            use_psychological_chunking: Whether to use psychological chunking (None uses default)
 
         Returns:
             List of embedding vectors
         """
         if not texts:
             return []
+        
+        # Determine if we should use psychological chunking
+        use_chunking = use_psychological_chunking if use_psychological_chunking is not None else self._use_psychological_chunking
+        
+        # If psychological chunking is enabled, process texts first
+        if use_chunking:
+            processed_texts = []
+            for text in texts:
+                if text and text.strip():
+                    # Use psychological chunking for meaningful text
+                    chunks = self._get_psychological_chunks(text)
+                    if chunks:
+                        # Combine chunks back into text with metadata preserved in processing
+                        chunk_texts = [chunk.text for chunk in chunks]
+                        processed_texts.append(" ".join(chunk_texts))
+                    else:
+                        processed_texts.append(text)
+                else:
+                    processed_texts.append(text)
+        else:
+            processed_texts = texts
 
         # For larger batches, use sentence-transformers (more efficient)
-        if len(texts) > 5:
+        if len(processed_texts) > 5:
             try:
                 # Initialize sentence transformer if needed
                 if self.sentence_transformer is None:
@@ -450,14 +817,14 @@ class ModelManager:
                     embedding_dim = 1536
 
                 # Process texts (replace empty with spaces to avoid errors)
-                processed_texts = [text if text and text.strip() else " " for text in texts]
+                final_texts = [text if text and text.strip() else " " for text in processed_texts]
 
                 # Generate embeddings in batch
-                embeddings = self.sentence_transformer.encode(processed_texts)
+                embeddings = self.sentence_transformer.encode(final_texts)
 
                 # Format results
                 results: List[Optional[List[float]]] = []
-                for i, text in enumerate(texts):
+                for i, text in enumerate(processed_texts):
                     if not text or not text.strip():
                         results.append([0.0] * embedding_dim)  # Zero vector
                     else:
@@ -470,7 +837,7 @@ class ModelManager:
                 self.logger.error(traceback.format_exc())
 
         # For smaller batches or if sentence-transformers failed, use the main model
-        return [self.generate_embedding(text) for text in texts]
+        return [self.generate_embedding(text, use_psychological_chunking=use_chunking) for text in texts]
 
 
 @typechecked

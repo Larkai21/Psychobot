@@ -89,8 +89,11 @@ supabase_url: Optional[str] = os.environ.get("SUPABASE_URL")
 supabase_key: Optional[str] = os.environ.get("SUPABASE_KEY")
 
 if not supabase_url or not supabase_key:
-    logger.critical("SUPABASE_URL and SUPABASE_KEY must be set in environment or .env file")
-    sys.exit(1)
+    import pytest
+    pytest.skip(
+        "Skipping Supabase-dependent tests: missing SUPABASE_URL or SUPABASE_KEY",
+        allow_module_level=True
+    )
 
 from psy_supabase.config import TEXT_GENERATING_MODEL
 from psy_supabase.core.database import DatabaseManager

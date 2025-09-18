@@ -774,3 +774,28 @@ def load_enhanced_mental_health_taxonomy() -> Dict[str, List[str]]:
         ],
         "emotional_support": ["help", "support", "understand", "listen", "care", "concern"],
     }
+# ------------------------------------------------------------------------------
+# Safe execution wrapper
+# ------------------------------------------------------------------------------
+
+import logging
+logger = get_package_logger(__name__)
+
+def safe_execute(func, *args, **kwargs):
+    """
+    Ejecuta una función capturando errores y evitando que rompa el flujo.
+    Devuelve None si hay error, loguea el error con traceback.
+
+    Args:
+        func: función a ejecutar
+        *args: argumentos posicionales
+        **kwargs: argumentos con nombre
+
+    Returns:
+        Resultado de ejecutar func o None si hay excepción.
+    """
+    try:
+        return func(*args, **kwargs)
+    except Exception as e:
+        logger.error(f"safe_execute error in {func.__name__}: {e}", exc_info=True)
+        return None

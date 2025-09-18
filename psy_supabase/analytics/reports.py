@@ -1,0 +1,994 @@
+"""
+Automated Clinical Report Generation for Psychobot Therapeutic System.
+
+This module provides comprehensive clinical report generation capabilities,
+synthesizing emotional trajectories, recurrent themes, and clinical insights
+into professional reports for therapeutic decision-making.
+
+Key Features:
+- Automated weekly/monthly patient reports
+- Recurrent theme analysis with clustering
+- Emotional trajectory summarization
+- Clinical alerts integration
+- Professional PDF export with Jinja templates
+- Role-based access control and data redaction
+
+Clinical Applications:
+- Treatment progress documentation
+- Therapeutic intervention planning
+- Clinical supervision and review
+- Patient care coordination
+- Regulatory compliance reporting
+"""
+
+import json
+import logging
+import os
+import tempfile
+from datetime import datetime, timedelta
+from typing import Dict, List, Optional, Any, Tuple
+from dataclasses import dataclass, asdict
+from enum import Enum
+import io
+import base64
+
+import numpy as np
+import pandas as pd
+from sklearn.cluster import DBSCAN, KMeans
+from sklearn.metrics.pairwise import cosine_similarity
+from jinja2 import Environment, FileSystemLoader, Template
+from weasyprint import HTML, CSS
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+from psy_supabase import get_package_logger
+from psy_supabase.core.database import DatabaseManager
+from psy_supabase.db.policies import UserRole
+from psy_supabase.analytics.emotion_trajectory import EmotionTrajectory, EmotionalDataPoint
+
+logger = get_package_logger(__name__)
+
+
+class ReportTimeframe(Enum):
+    """Enumeration of report timeframe options."""
+    WEEK = "week"
+    MONTH = "month"
+    QUARTER = "quarter"
+    SEMESTER = "semester"
+    YEAR = "year"
+
+
+class ThemeCategory(Enum):
+    """Enumeration of therapeutic theme categories."""
+    PROGRESS = "progress"
+    CHALLENGES = "challenges"
+    RELATIONSHIPS = "relationships"
+    EMOTIONS = "emotions"
+    COPING = "coping"
+    GOALS = "goals"
+    TRAUMA = "trauma"
+    ANXIETY = "anxiety"
+    DEPRESSION = "depression"
+    OTHER = "other"
+
+
+@dataclass
+class RecurrentTheme:
+    """Represents a recurrent therapeutic theme."""
+    theme_name: str
+    category: ThemeCategory
+    frequency: int
+    intensity_avg: float
+    polarity_avg: float
+    first_occurrence: datetime
+    last_occurrence: datetime
+    representative_chunks: List[str]
+    cluster_size: int
+    significance_score: float
+
+
+@dataclass
+class EmotionalSummary:
+    """Represents emotional trajectory summary."""
+    timeframe: str
+    total_sessions: int
+    avg_polarity: float
+    polarity_trend: str
+    dominant_emotion: str
+    emotion_distribution: Dict[str, float]
+    concerning_episodes: int
+    positive_episodes: int
+    stability_score: float
+    improvement_indicators: List[str]
+    risk_factors: List[str]
+
+
+@dataclass
+class ClinicalAlert:
+    """Represents a clinical alert for reporting."""
+    alert_id: str
+    alert_type: str
+    severity: str
+    message: str
+    created_at: datetime
+    status: str
+    threshold_exceeded: float
+    patient_impact: str
+
+
+@dataclass
+class PatientReport:
+    """Represents a comprehensive patient report."""
+    patient_id: str
+    report_id: str
+    generated_at: datetime
+    timeframe: str
+    reporting_period: Tuple[datetime, datetime]
+    
+    # Core sections
+    executive_summary: str
+    recurrent_themes: List[RecurrentTheme]
+    emotional_summary: EmotionalSummary
+    active_alerts: List[ClinicalAlert]
+    
+    # Clinical insights
+    therapeutic_progress: str
+    risk_assessment: str
+    recommendations: List[str]
+    
+    # Metadata
+    data_points_analyzed: int
+    sessions_included: int
+    generated_by: str
+    clinical_disclaimer: str
+
+
+class ClinicalReportGenerator:
+    """
+    Generates comprehensive clinical reports for therapeutic analysis.
+    
+    This class provides automated report generation capabilities that synthesize
+    emotional trajectories, recurrent themes, and clinical insights into
+    professional reports for clinical decision-making.
+    """
+
+    def __init__(self, database_manager: DatabaseManager, templates_dir: str = "templates"):
+        """
+        Initialize the clinical report generator.
+        
+        Args:
+            database_manager: DatabaseManager instance for data access
+            templates_dir: Directory containing Jinja templates
+        """
+        self.db_manager = database_manager
+        self.emotion_tracker = EmotionTrajectory(database_manager)
+        self.templates_dir = templates_dir
+        
+        # Initialize Jinja environment
+        self.jinja_env = Environment(
+            loader=FileSystemLoader(templates_dir),
+            autoescape=True
+        )
+        
+        # Clinical disclaimer
+        self.clinical_disclaimer = (
+            "CLINICAL DISCLAIMER: This report is generated by an AI system and is intended "
+            "to support clinical decision-making. It is NOT a replacement for professional "
+            "therapeutic assessment, diagnosis, or treatment. All clinical decisions should "
+            "be made by qualified healthcare professionals based on comprehensive evaluation "
+            "of the patient's condition and circumstances."
+        )
+
+    def generate_patient_report(
+        self, 
+        patient_id: str, 
+        timeframe: str = "week"
+    ) -> PatientReport:
+        """
+        Generate comprehensive patient report for specified timeframe.
+        
+        Args:
+            patient_id: Patient identifier
+            timeframe: Report timeframe ("week", "month", "quarter", "semester", "year")
+            
+        Returns:
+            PatientReport object with complete analysis
+        """
+        try:
+            # Validate access
+            if not self._validate_report_access(patient_id):
+                raise PermissionError(f"Access denied for patient report: {patient_id}")
+            
+            # Calculate reporting period
+            end_date = datetime.now()
+            start_date = self._calculate_start_date(timeframe, end_date)
+            
+            logger.info(f"Generating {timeframe} report for patient {patient_id} ({start_date} to {end_date})")
+            
+            # Generate report sections
+            recurrent_themes = self.summarize_recurrent_themes(patient_id, timeframe)
+            emotional_summary = self.summarize_emotional_trajectory(patient_id, timeframe)
+            active_alerts = self.list_active_alerts(patient_id)
+            
+            # Generate clinical insights
+            executive_summary = self._generate_executive_summary(
+                recurrent_themes, emotional_summary, active_alerts
+            )
+            therapeutic_progress = self._assess_therapeutic_progress(
+                emotional_summary, recurrent_themes
+            )
+            risk_assessment = self._generate_risk_assessment(
+                emotional_summary, active_alerts
+            )
+            recommendations = self._generate_recommendations(
+                recurrent_themes, emotional_summary, active_alerts
+            )
+            
+            # Get metadata
+            data_points_analyzed = self._count_data_points(patient_id, start_date, end_date)
+            sessions_included = self._count_sessions(patient_id, start_date, end_date)
+            
+            # Create report
+            report = PatientReport(
+                patient_id=patient_id,
+                report_id=f"RPT_{patient_id[-8:]}_{datetime.now().strftime('%Y%m%d_%H%M%S')}",
+                generated_at=datetime.now(),
+                timeframe=timeframe,
+                reporting_period=(start_date, end_date),
+                executive_summary=executive_summary,
+                recurrent_themes=recurrent_themes,
+                emotional_summary=emotional_summary,
+                active_alerts=active_alerts,
+                therapeutic_progress=therapeutic_progress,
+                risk_assessment=risk_assessment,
+                recommendations=recommendations,
+                data_points_analyzed=data_points_analyzed,
+                sessions_included=sessions_included,
+                generated_by=self.db_manager.user_id,
+                clinical_disclaimer=self.clinical_disclaimer
+            )
+            
+            logger.info(f"Successfully generated report {report.report_id} for patient {patient_id}")
+            return report
+            
+        except Exception as e:
+            logger.error(f"Error generating patient report: {e}")
+            raise
+
+    def summarize_recurrent_themes(
+        self, 
+        patient_id: str, 
+        timeframe: str
+    ) -> List[RecurrentTheme]:
+        """
+        Analyze and summarize recurrent therapeutic themes using clustering.
+        
+        Args:
+            patient_id: Patient identifier
+            timeframe: Analysis timeframe
+            
+        Returns:
+            List of RecurrentTheme objects ordered by significance
+        """
+        try:
+            # Get session chunks with themes
+            chunks_data = self._get_themed_chunks(patient_id, timeframe)
+            
+            if not chunks_data:
+                logger.warning(f"No themed chunks found for patient {patient_id}")
+                return []
+            
+            # Extract embeddings and metadata
+            embeddings = []
+            chunk_metadata = []
+            
+            for chunk in chunks_data:
+                if chunk.get('embedding') and chunk.get('metadata'):
+                    embeddings.append(chunk['embedding'])
+                    chunk_metadata.append({
+                        'chunk_id': chunk['id'],
+                        'content': chunk['content'],
+                        'theme': chunk['metadata'].get('theme'),
+                        'intensity': chunk['metadata'].get('intensity', 0.5),
+                        'polarity': chunk['metadata'].get('polarity', 0.0),
+                        'timestamp': datetime.fromisoformat(chunk['created_at'])
+                    })
+            
+            if len(embeddings) < 3:
+                logger.warning(f"Insufficient data for theme clustering: {len(embeddings)} chunks")
+                return []
+            
+            # Perform clustering analysis
+            themes = self._cluster_themes(embeddings, chunk_metadata)
+            
+            # Sort by significance score
+            themes.sort(key=lambda x: x.significance_score, reverse=True)
+            
+            # Return top 3 most significant themes
+            return themes[:3]
+            
+        except Exception as e:
+            logger.error(f"Error summarizing recurrent themes: {e}")
+            return []
+
+    def summarize_emotional_trajectory(
+        self, 
+        patient_id: str, 
+        timeframe: str
+    ) -> EmotionalSummary:
+        """
+        Summarize emotional trajectory patterns and trends.
+        
+        Args:
+            patient_id: Patient identifier
+            timeframe: Analysis timeframe
+            
+        Returns:
+            EmotionalSummary object with trajectory analysis
+        """
+        try:
+            # Get trajectory statistics
+            stats = self.emotion_tracker.get_trajectory_statistics(patient_id, timeframe)
+            
+            if not stats:
+                logger.warning(f"No trajectory data found for patient {patient_id}")
+                return self._create_empty_emotional_summary(timeframe)
+            
+            # Calculate derived metrics
+            stability_score = self._calculate_stability_score(stats)
+            improvement_indicators = self._identify_improvement_indicators(stats)
+            risk_factors = self._identify_risk_factors(stats)
+            
+            # Determine dominant emotion
+            emotion_dist = stats.get('emotion_distribution', {})
+            dominant_emotion = max(emotion_dist.keys(), key=lambda k: emotion_dist[k]) if emotion_dist else "neutral"
+            
+            return EmotionalSummary(
+                timeframe=timeframe,
+                total_sessions=stats.get('total_data_points', 0),
+                avg_polarity=stats.get('polarity_stats', {}).get('mean', 0.0),
+                polarity_trend=stats.get('polarity_stats', {}).get('trend', {}).get('interpretation', 'unknown'),
+                dominant_emotion=dominant_emotion,
+                emotion_distribution=emotion_dist,
+                concerning_episodes=stats.get('concerning_episodes', 0),
+                positive_episodes=stats.get('positive_episodes', 0),
+                stability_score=stability_score,
+                improvement_indicators=improvement_indicators,
+                risk_factors=risk_factors
+            )
+            
+        except Exception as e:
+            logger.error(f"Error summarizing emotional trajectory: {e}")
+            return self._create_empty_emotional_summary(timeframe)
+
+    def list_active_alerts(self, patient_id: str) -> List[ClinicalAlert]:
+        """
+        List active clinical alerts for the patient.
+        
+        Args:
+            patient_id: Patient identifier
+            
+        Returns:
+            List of ClinicalAlert objects
+        """
+        try:
+            alerts_data = self.db_manager.get_active_clinical_alerts(patient_id)
+            
+            clinical_alerts = []
+            for alert in alerts_data:
+                clinical_alert = ClinicalAlert(
+                    alert_id=alert['id'],
+                    alert_type=alert['alert_type'],
+                    severity=alert['severity'],
+                    message=alert['message'],
+                    created_at=datetime.fromisoformat(alert['created_at']),
+                    status=alert['status'],
+                    threshold_exceeded=alert.get('threshold_exceeded', 0.0),
+                    patient_impact=self._assess_alert_impact(alert)
+                )
+                clinical_alerts.append(clinical_alert)
+            
+            # Sort by severity and creation date
+            severity_order = {'critical': 4, 'high': 3, 'medium': 2, 'low': 1}
+            clinical_alerts.sort(
+                key=lambda x: (severity_order.get(x.severity, 0), x.created_at),
+                reverse=True
+            )
+            
+            return clinical_alerts
+            
+        except Exception as e:
+            logger.error(f"Error listing active alerts: {e}")
+            return []
+
+    def export_to_pdf(
+        self, 
+        patient_id: str, 
+        timeframe: str = "week",
+        output_dir: str = "reports"
+    ) -> Optional[str]:
+        """
+        Export patient report to professional PDF format.
+        
+        Args:
+            patient_id: Patient identifier
+            timeframe: Report timeframe
+            output_dir: Directory to save PDF
+            
+        Returns:
+            Path to generated PDF file, or None if failed
+        """
+        try:
+            # Validate access
+            if not self._validate_report_access(patient_id):
+                logger.error(f"Access denied for PDF export: patient {patient_id}")
+                return None
+            
+            # Generate report data
+            report = self.generate_patient_report(patient_id, timeframe)
+            
+            # Load Jinja template
+            template = self.jinja_env.get_template('report_patient.j2')
+            
+            # Generate trajectory chart
+            chart_path = self._generate_trajectory_chart(patient_id, timeframe)
+            
+            # Prepare template context
+            context = {
+                'report': report,
+                'patient_id_short': patient_id[-8:],
+                'generation_date': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
+                'chart_path': chart_path,
+                'has_chart': chart_path is not None
+            }
+            
+            # Render HTML
+            html_content = template.render(**context)
+            
+            # Ensure output directory exists
+            os.makedirs(output_dir, exist_ok=True)
+            
+            # Generate PDF
+            timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+            filename = f"clinical_report_{patient_id[-8:]}_{timeframe}_{timestamp}.pdf"
+            filepath = os.path.join(output_dir, filename)
+            
+            # Convert HTML to PDF
+            HTML(string=html_content).write_pdf(filepath)
+            
+            # Clean up temporary chart file
+            if chart_path and os.path.exists(chart_path):
+                os.remove(chart_path)
+            
+            # Audit log the export
+            self.db_manager.audit_access_attempt(
+                self.db_manager.user_id, patient_id, "EXPORT", "clinical_report", True
+            )
+            
+            logger.info(f"Successfully exported PDF report: {filepath}")
+            return filepath
+            
+        except Exception as e:
+            logger.error(f"Error exporting PDF report: {e}")
+            self.db_manager.audit_access_attempt(
+                self.db_manager.user_id, patient_id, "EXPORT", "clinical_report", False
+            )
+            return None
+
+    def _validate_report_access(self, patient_id: str) -> bool:
+        """Validate user access to generate reports for patient."""
+        try:
+            # Check if user has access to patient data
+            if not self.db_manager.validate_access(self.db_manager.user_id, patient_id, "SELECT"):
+                return False
+            
+            # Patients cannot generate their own reports
+            user_role = self.db_manager.get_user_role(self.db_manager.user_id)
+            if user_role == UserRole.PATIENT:
+                return False
+            
+            return True
+            
+        except Exception as e:
+            logger.error(f"Error validating report access: {e}")
+            return False
+
+    def _calculate_start_date(self, timeframe: str, end_date: datetime) -> datetime:
+        """Calculate start date based on timeframe."""
+        timeframe_map = {
+            "week": timedelta(weeks=1),
+            "month": timedelta(days=30),
+            "quarter": timedelta(days=90),
+            "semester": timedelta(days=180),
+            "year": timedelta(days=365)
+        }
+        
+        delta = timeframe_map.get(timeframe, timedelta(weeks=1))
+        return end_date - delta
+
+    def _get_themed_chunks(self, patient_id: str, timeframe: str) -> List[Dict[str, Any]]:
+        """Retrieve session chunks with theme metadata for analysis."""
+        try:
+            end_date = datetime.now()
+            start_date = self._calculate_start_date(timeframe, end_date)
+            
+            response = self.db_manager.supabase.rpc(
+                "get_themed_chunks_for_analysis",
+                {
+                    "p_patient_id": patient_id,
+                    "p_start_date": start_date.isoformat(),
+                    "p_end_date": end_date.isoformat()
+                }
+            ).execute()
+            
+            return response.data if response.data else []
+            
+        except Exception as e:
+            logger.error(f"Error retrieving themed chunks: {e}")
+            return []
+
+    def _cluster_themes(
+        self, 
+        embeddings: List[List[float]], 
+        chunk_metadata: List[Dict[str, Any]]
+    ) -> List[RecurrentTheme]:
+        """Perform clustering analysis on chunk embeddings to identify themes."""
+        try:
+            embeddings_array = np.array(embeddings)
+            
+            # Use DBSCAN for theme clustering
+            clustering = DBSCAN(eps=0.3, min_samples=2, metric='cosine')
+            cluster_labels = clustering.fit_predict(embeddings_array)
+            
+            themes = []
+            unique_labels = set(cluster_labels)
+            
+            for label in unique_labels:
+                if label == -1:  # Skip noise points
+                    continue
+                
+                # Get chunks in this cluster
+                cluster_chunks = [chunk_metadata[i] for i, l in enumerate(cluster_labels) if l == label]
+                
+                if len(cluster_chunks) < 2:
+                    continue
+                
+                # Analyze cluster
+                theme = self._analyze_theme_cluster(cluster_chunks, label)
+                if theme:
+                    themes.append(theme)
+            
+            return themes
+            
+        except Exception as e:
+            logger.error(f"Error clustering themes: {e}")
+            return []
+
+    def _analyze_theme_cluster(
+        self, 
+        cluster_chunks: List[Dict[str, Any]], 
+        cluster_id: int
+    ) -> Optional[RecurrentTheme]:
+        """Analyze a cluster of chunks to extract theme information."""
+        try:
+            if not cluster_chunks:
+                return None
+            
+            # Extract theme information
+            themes = [chunk.get('theme', 'unknown') for chunk in cluster_chunks]
+            most_common_theme = max(set(themes), key=themes.count)
+            
+            # Calculate statistics
+            intensities = [chunk.get('intensity', 0.5) for chunk in cluster_chunks]
+            polarities = [chunk.get('polarity', 0.0) for chunk in cluster_chunks]
+            timestamps = [chunk.get('timestamp') for chunk in cluster_chunks]
+            
+            avg_intensity = np.mean(intensities)
+            avg_polarity = np.mean(polarities)
+            frequency = len(cluster_chunks)
+            
+            # Calculate significance score
+            significance_score = self._calculate_theme_significance(
+                frequency, avg_intensity, abs(avg_polarity)
+            )
+            
+            # Categorize theme
+            category = self._categorize_theme(most_common_theme)
+            
+            # Get representative chunks
+            representative_chunks = [
+                chunk.get('content', '')[:100] + '...' if len(chunk.get('content', '')) > 100 
+                else chunk.get('content', '')
+                for chunk in cluster_chunks[:3]
+            ]
+            
+            return RecurrentTheme(
+                theme_name=most_common_theme,
+                category=category,
+                frequency=frequency,
+                intensity_avg=avg_intensity,
+                polarity_avg=avg_polarity,
+                first_occurrence=min(timestamps),
+                last_occurrence=max(timestamps),
+                representative_chunks=representative_chunks,
+                cluster_size=len(cluster_chunks),
+                significance_score=significance_score
+            )
+            
+        except Exception as e:
+            logger.error(f"Error analyzing theme cluster: {e}")
+            return None
+
+    def _calculate_theme_significance(
+        self, 
+        frequency: int, 
+        avg_intensity: float, 
+        abs_polarity: float
+    ) -> float:
+        """Calculate significance score for a theme."""
+        # Weighted combination of frequency, intensity, and emotional impact
+        frequency_score = min(frequency / 10.0, 1.0)  # Normalize to max 1.0
+        intensity_score = avg_intensity
+        polarity_score = abs_polarity
+        
+        return (frequency_score * 0.4) + (intensity_score * 0.3) + (polarity_score * 0.3)
+
+    def _categorize_theme(self, theme_name: str) -> ThemeCategory:
+        """Categorize theme based on name and content."""
+        theme_lower = theme_name.lower()
+        
+        if any(word in theme_lower for word in ['progress', 'improvement', 'better', 'success']):
+            return ThemeCategory.PROGRESS
+        elif any(word in theme_lower for word in ['challenge', 'difficult', 'struggle', 'problem']):
+            return ThemeCategory.CHALLENGES
+        elif any(word in theme_lower for word in ['relationship', 'family', 'friend', 'partner']):
+            return ThemeCategory.RELATIONSHIPS
+        elif any(word in theme_lower for word in ['anxiety', 'worry', 'nervous', 'panic']):
+            return ThemeCategory.ANXIETY
+        elif any(word in theme_lower for word in ['depression', 'sad', 'hopeless', 'empty']):
+            return ThemeCategory.DEPRESSION
+        elif any(word in theme_lower for word in ['trauma', 'abuse', 'ptsd', 'flashback']):
+            return ThemeCategory.TRAUMA
+        elif any(word in theme_lower for word in ['coping', 'strategy', 'technique', 'skill']):
+            return ThemeCategory.COPING
+        elif any(word in theme_lower for word in ['goal', 'objective', 'plan', 'future']):
+            return ThemeCategory.GOALS
+        elif any(word in theme_lower for word in ['emotion', 'feeling', 'mood', 'affect']):
+            return ThemeCategory.EMOTIONS
+        else:
+            return ThemeCategory.OTHER
+
+    def _calculate_stability_score(self, stats: Dict[str, Any]) -> float:
+        """Calculate emotional stability score from trajectory statistics."""
+        try:
+            polarity_std = stats.get('polarity_stats', {}).get('std', 0.0)
+            intensity_std = stats.get('intensity_stats', {}).get('std', 0.0)
+            
+            # Lower standard deviation = higher stability
+            # Normalize to 0-1 scale where 1 is most stable
+            polarity_stability = max(0.0, 1.0 - (polarity_std / 2.0))
+            intensity_stability = max(0.0, 1.0 - intensity_std)
+            
+            return (polarity_stability + intensity_stability) / 2.0
+            
+        except Exception as e:
+            logger.error(f"Error calculating stability score: {e}")
+            return 0.5
+
+    def _identify_improvement_indicators(self, stats: Dict[str, Any]) -> List[str]:
+        """Identify positive improvement indicators from trajectory data."""
+        indicators = []
+        
+        try:
+            trend = stats.get('polarity_stats', {}).get('trend', {})
+            interpretation = trend.get('interpretation', '')
+            
+            if 'improving' in interpretation:
+                indicators.append("Positive emotional trend detected")
+            
+            avg_polarity = stats.get('polarity_stats', {}).get('mean', 0.0)
+            if avg_polarity > 0.3:
+                indicators.append("Overall positive emotional state")
+            
+            positive_episodes = stats.get('positive_episodes', 0)
+            total_episodes = stats.get('total_data_points', 1)
+            if positive_episodes / total_episodes > 0.6:
+                indicators.append("Majority of sessions show positive emotions")
+            
+            concerning_episodes = stats.get('concerning_episodes', 0)
+            if concerning_episodes == 0:
+                indicators.append("No concerning emotional episodes")
+            
+        except Exception as e:
+            logger.error(f"Error identifying improvement indicators: {e}")
+        
+        return indicators
+
+    def _identify_risk_factors(self, stats: Dict[str, Any]) -> List[str]:
+        """Identify risk factors from trajectory data."""
+        risk_factors = []
+        
+        try:
+            trend = stats.get('polarity_stats', {}).get('trend', {})
+            interpretation = trend.get('interpretation', '')
+            
+            if 'declining' in interpretation:
+                risk_factors.append("Declining emotional trend")
+            
+            avg_polarity = stats.get('polarity_stats', {}).get('mean', 0.0)
+            if avg_polarity < -0.3:
+                risk_factors.append("Persistently negative emotional state")
+            
+            concerning_episodes = stats.get('concerning_episodes', 0)
+            total_episodes = stats.get('total_data_points', 1)
+            if concerning_episodes / total_episodes > 0.3:
+                risk_factors.append("High frequency of concerning episodes")
+            
+            polarity_std = stats.get('polarity_stats', {}).get('std', 0.0)
+            if polarity_std > 0.8:
+                risk_factors.append("High emotional instability")
+            
+        except Exception as e:
+            logger.error(f"Error identifying risk factors: {e}")
+        
+        return risk_factors
+
+    def _create_empty_emotional_summary(self, timeframe: str) -> EmotionalSummary:
+        """Create empty emotional summary when no data available."""
+        return EmotionalSummary(
+            timeframe=timeframe,
+            total_sessions=0,
+            avg_polarity=0.0,
+            polarity_trend="no_data",
+            dominant_emotion="neutral",
+            emotion_distribution={},
+            concerning_episodes=0,
+            positive_episodes=0,
+            stability_score=0.0,
+            improvement_indicators=[],
+            risk_factors=["Insufficient data for analysis"]
+        )
+
+    def _assess_alert_impact(self, alert: Dict[str, Any]) -> str:
+        """Assess the clinical impact of an alert."""
+        severity = alert.get('severity', 'low')
+        alert_type = alert.get('alert_type', '')
+        
+        if severity == 'critical':
+            return "Immediate clinical attention required"
+        elif severity == 'high':
+            if 'negative_change' in alert_type:
+                return "Significant emotional deterioration detected"
+            elif 'sustained_negative' in alert_type:
+                return "Prolonged concerning emotional state"
+            else:
+                return "High priority clinical review needed"
+        elif severity == 'medium':
+            return "Monitoring and potential intervention recommended"
+        else:
+            return "Awareness and continued observation suggested"
+
+    def _generate_executive_summary(
+        self,
+        themes: List[RecurrentTheme],
+        emotional_summary: EmotionalSummary,
+        alerts: List[ClinicalAlert]
+    ) -> str:
+        """Generate executive summary of patient status."""
+        try:
+            summary_parts = []
+            
+            # Overall status
+            if emotional_summary.avg_polarity > 0.3:
+                summary_parts.append("Patient demonstrates overall positive emotional trajectory.")
+            elif emotional_summary.avg_polarity < -0.3:
+                summary_parts.append("Patient shows concerning negative emotional patterns requiring attention.")
+            else:
+                summary_parts.append("Patient exhibits mixed emotional patterns with neutral overall trajectory.")
+            
+            # Key themes
+            if themes:
+                top_theme = themes[0]
+                summary_parts.append(f"Primary therapeutic focus area: {top_theme.theme_name} "
+                                   f"(frequency: {top_theme.frequency} occurrences).")
+            
+            # Alert status
+            high_alerts = [a for a in alerts if a.severity in ['high', 'critical']]
+            if high_alerts:
+                summary_parts.append(f"{len(high_alerts)} high-priority clinical alerts require immediate attention.")
+            elif alerts:
+                summary_parts.append(f"{len(alerts)} clinical alerts identified for monitoring.")
+            else:
+                summary_parts.append("No active clinical alerts.")
+            
+            # Stability assessment
+            if emotional_summary.stability_score > 0.7:
+                summary_parts.append("Emotional stability indicators are positive.")
+            elif emotional_summary.stability_score < 0.4:
+                summary_parts.append("Emotional instability patterns identified.")
+            
+            return " ".join(summary_parts)
+            
+        except Exception as e:
+            logger.error(f"Error generating executive summary: {e}")
+            return "Executive summary could not be generated due to insufficient data."
+
+    def _assess_therapeutic_progress(
+        self,
+        emotional_summary: EmotionalSummary,
+        themes: List[RecurrentTheme]
+    ) -> str:
+        """Assess therapeutic progress based on data analysis."""
+        try:
+            progress_indicators = []
+            
+            # Emotional trend analysis
+            if emotional_summary.polarity_trend in ['improving', 'slightly_improving']:
+                progress_indicators.append("Positive emotional trend indicates therapeutic progress")
+            elif emotional_summary.polarity_trend in ['declining', 'slightly_declining']:
+                progress_indicators.append("Declining emotional trend suggests need for intervention adjustment")
+            
+            # Theme analysis
+            progress_themes = [t for t in themes if t.category == ThemeCategory.PROGRESS]
+            if progress_themes:
+                progress_indicators.append(f"Progress-related themes identified ({len(progress_themes)} instances)")
+            
+            # Stability assessment
+            if emotional_summary.stability_score > 0.6:
+                progress_indicators.append("Emotional stability has improved")
+            
+            # Improvement indicators
+            if emotional_summary.improvement_indicators:
+                progress_indicators.extend(emotional_summary.improvement_indicators)
+            
+            if progress_indicators:
+                return "Therapeutic progress assessment: " + "; ".join(progress_indicators) + "."
+            else:
+                return "Therapeutic progress assessment: Mixed indicators, continued monitoring recommended."
+                
+        except Exception as e:
+            logger.error(f"Error assessing therapeutic progress: {e}")
+            return "Therapeutic progress assessment could not be completed."
+
+    def _generate_risk_assessment(
+        self,
+        emotional_summary: EmotionalSummary,
+        alerts: List[ClinicalAlert]
+    ) -> str:
+        """Generate clinical risk assessment."""
+        try:
+            risk_level = "Low"
+            risk_factors = emotional_summary.risk_factors.copy()
+            
+            # Assess alert severity
+            critical_alerts = [a for a in alerts if a.severity == 'critical']
+            high_alerts = [a for a in alerts if a.severity == 'high']
+            
+            if critical_alerts:
+                risk_level = "Critical"
+                risk_factors.append(f"{len(critical_alerts)} critical alerts active")
+            elif high_alerts:
+                risk_level = "High"
+                risk_factors.append(f"{len(high_alerts)} high-severity alerts active")
+            elif alerts:
+                risk_level = "Moderate"
+            
+            # Assess concerning episodes
+            if emotional_summary.concerning_episodes > 5:
+                risk_level = "High" if risk_level != "Critical" else risk_level
+                risk_factors.append("Multiple concerning emotional episodes")
+            
+            risk_summary = f"Risk Level: {risk_level}. "
+            if risk_factors:
+                risk_summary += "Risk factors: " + "; ".join(risk_factors) + "."
+            else:
+                risk_summary += "No significant risk factors identified."
+            
+            return risk_summary
+            
+        except Exception as e:
+            logger.error(f"Error generating risk assessment: {e}")
+            return "Risk assessment could not be completed."
+
+    def _generate_recommendations(
+        self,
+        themes: List[RecurrentTheme],
+        emotional_summary: EmotionalSummary,
+        alerts: List[ClinicalAlert]
+    ) -> List[str]:
+        """Generate clinical recommendations based on analysis."""
+        recommendations = []
+        
+        try:
+            # Alert-based recommendations
+            critical_alerts = [a for a in alerts if a.severity == 'critical']
+            if critical_alerts:
+                recommendations.append("Immediate clinical intervention required for critical alerts")
+            
+            high_alerts = [a for a in alerts if a.severity in ['high', 'medium']]
+            if high_alerts:
+                recommendations.append("Review and address active clinical alerts")
+            
+            # Emotional trend recommendations
+            if emotional_summary.polarity_trend in ['declining', 'slightly_declining']:
+                recommendations.append("Consider therapeutic approach adjustment due to declining emotional trend")
+            
+            # Theme-based recommendations
+            if themes:
+                challenge_themes = [t for t in themes if t.category == ThemeCategory.CHALLENGES]
+                if challenge_themes:
+                    recommendations.append("Focus therapeutic sessions on identified challenge areas")
+                
+                anxiety_themes = [t for t in themes if t.category == ThemeCategory.ANXIETY]
+                if anxiety_themes:
+                    recommendations.append("Implement anxiety management techniques")
+                
+                depression_themes = [t for t in themes if t.category == ThemeCategory.DEPRESSION]
+                if depression_themes:
+                    recommendations.append("Consider depression-focused interventions")
+            
+            # Stability recommendations
+            if emotional_summary.stability_score < 0.4:
+                recommendations.append("Implement emotional regulation strategies")
+            
+            # Default recommendations
+            if not recommendations:
+                recommendations.append("Continue current therapeutic approach with regular monitoring")
+            
+            # Always include follow-up
+            recommendations.append("Schedule follow-up assessment within appropriate timeframe")
+            
+        except Exception as e:
+            logger.error(f"Error generating recommendations: {e}")
+            recommendations.append("Clinical review recommended due to analysis limitations")
+        
+        return recommendations
+
+    def _count_data_points(self, patient_id: str, start_date: datetime, end_date: datetime) -> int:
+        """Count total data points analyzed in the report period."""
+        try:
+            response = self.db_manager.supabase.rpc(
+                "count_patient_data_points",
+                {
+                    "p_patient_id": patient_id,
+                    "p_start_date": start_date.isoformat(),
+                    "p_end_date": end_date.isoformat()
+                }
+            ).execute()
+            
+            return response.data[0]['count'] if response.data else 0
+            
+        except Exception as e:
+            logger.error(f"Error counting data points: {e}")
+            return 0
+
+    def _count_sessions(self, patient_id: str, start_date: datetime, end_date: datetime) -> int:
+        """Count sessions included in the report period."""
+        try:
+            response = self.db_manager.supabase.rpc(
+                "count_patient_sessions",
+                {
+                    "p_patient_id": patient_id,
+                    "p_start_date": start_date.isoformat(),
+                    "p_end_date": end_date.isoformat()
+                }
+            ).execute()
+            
+            return response.data[0]['count'] if response.data else 0
+            
+        except Exception as e:
+            logger.error(f"Error counting sessions: {e}")
+            return 0
+
+    def _generate_trajectory_chart(self, patient_id: str, timeframe: str) -> Optional[str]:
+        """Generate trajectory chart for PDF inclusion."""
+        try:
+            with tempfile.NamedTemporaryFile(suffix='.png', delete=False) as tmp_file:
+                chart_path = self.emotion_tracker.export_graph(
+                    patient_id, timeframe, "png", os.path.dirname(tmp_file.name)
+                )
+                return chart_path
+                
+        except Exception as e:
+            logger.error(f"Error generating trajectory chart: {e}")
+            return None

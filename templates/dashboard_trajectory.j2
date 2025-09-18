@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel de Trayectoria Emocional - Psychobot</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/date-fns@2.29.3/index.min.js"></script>
+    <style>
+        .trajectory-card {
+            border-radius: 15px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s ease-in-out;
+        }
+        .trajectory-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+        .emotion-indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 8px;
+        }
+        .emotion-happy { background-color: #28a745; }
+        .emotion-sad { background-color: #6c757d; }
+        .emotion-angry { background-color: #dc3545; }
+        .emotion-fear { background-color: #ffc107; }
+        .emotion-neutral { background-color: #17a2b8; }
+        .emotion-anxiety { background-color: #fd7e14; }
+        .emotion-depression { background-color: #6f42c1; }
+        .alert-high { border-left: 4px solid #dc3545; }
+        .alert-medium { border-left: 4px solid #ffc107; }
+        .alert-low { border-left: 4px solid #28a745; }
+        .stats-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        .chart-container {
+            position: relative;
+            height: 400px;
+            margin: 20px 0;
+        }
+        .timeframe-selector {
+            background-color: #f8f9fa;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+        .patient-selector {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body class="bg-light">
+    <div class="container-fluid py-4">
+        <!-- Header -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h1 class="h3 mb-0">
+                        <i class="fas fa-chart-line text-primary me-2"></i>
+                        Panel de Trayectoria Emocional
+                    </h1>
+                    <div class="d-flex gap-2">
+                        <button class="btn btn-outline-primary" onclick="exportTrajectory()">
+                            <i class="fas fa-download me-1"></i>Exportar
+                        </button>
+                        <button class="btn btn-primary" onclick="refreshData()">
+                            <i class="fas fa-sync-alt me-1"></i>Actualizar
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Controls -->
+        <div class="row mb-4">
+            <div class="col-md-6">
+                <div class="timeframe-selector">
+                    <h6 class="mb-3">Período de Tiempo</h6>
+                    <div class="btn-group w-100" role="group">
+                        <input type="radio" class="btn-check" name="timeframe" id="week" value="1_week" checked>
+                        <label class="btn btn-outline-primary" for="week">1 Semana</label>
+                        
+                        <input type="radio" class="btn-check" name="timeframe" id="month" value="1_month">
+                        <label class="btn btn-outline-primary" for="month">1 Mes</label>
+                        
+                        <input type="radio" class="btn-check" name="timeframe" id="quarter" value="3_months">
+                        <label class="btn btn-outline-primary" for="quarter">3 Meses</label>
+                        
+                        <input type="radio" class="btn-check" name="timeframe" id="semester" value="6_months">
+                        <label class="btn btn-outline-primary" for="semester">6 Meses</label>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="timeframe-selector">
+                    <h6 class="mb-3">Seleccionar Paciente</h6>
+                    <select class="form-select" id="patientSelector" onchange="loadPatientTrajectory()">
+                        <option value="">Seleccionar paciente...</option>
+                        {% for patient in patients %}
+                        <option value="{{ patient.id }}">{{ patient.name }} ({{ patient.id[-8:] }})</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="row">
+            <!-- Trajectory Chart -->
+            <div class="col-lg-8">
+                <div class="card trajectory-card mb-4">
+                    <div class="card-header bg-white">
+                        <h5 class="card-title mb-0">
+                            <i class="fas fa-chart-area text-info me-2"></i>
+                            Trayectoria Emocional
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="chart-container">
+                            <canvas id="trajectoryChart"></canvas>
+                        </div>
+                        <div class="row mt-3">
+                            <div class="col-md-6">
+                                <small class="text-muted">
+                                    <i class="fas fa-info-circle me-1"></i>
+                                    La polaridad emocional va de -1 (muy negativo) a +1 (muy positivo)
+                                </small>
+                            </div>
+                            <div class="col-md-6 text-end">
+                                <small class="text-muted">
+                                    Última actualización: <span id="lastUpdate">{{ current_time }}</span>
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Emotion Distribution -->
+                <div class="card trajectory-card">
+                    <div class="card-header bg-white">
+                        <h5 class="card-title mb-0">
+                            <i class="fas fa-pie-chart text-success me-2"></i>
+                            Distribución de Emociones
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="chart-container">
+                            <canvas id="emotionDistributionChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sidebar -->
+            <div class="col-lg-4">
+                <!-- Statistics -->
+                <div class="card stats-card trajectory-card mb-4">
+                    <div class="card-body text-center">
+                        <h5 class="card-title">
+                            <i class="fas fa-analytics me-2"></i>
+                            Estadísticas del Período
+                        </h5>
+                        <div class="row mt-3">
+                            <div class="col-6">
+                                <div class="border-end border-light">
+                                    <h3 class="mb-1" id="avgPolarity">--</h3>
+                                    <small>Polaridad Promedio</small>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <h3 class="mb-1" id="totalSessions">--</h3>
+                                <small>Sesiones Analizadas</small>
+                            </div>
+                        </div>
+                        <div class="row mt-3">
+                            <div class="col-6">
+                                <div class="border-end border-light">
+                                    <h3 class="mb-1" id="concerningEpisodes">--</h3>
+                                    <small>Episodios Preocupantes</small>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <h3 class="mb-1" id="trendDirection">--</h3>
+                                <small>Tendencia</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Clinical Alerts -->
+                <div class="card trajectory-card mb-4">
+                    <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                        <h6 class="card-title mb-0">
+                            <i class="fas fa-exclamation-triangle text-warning me-2"></i>
+                            Alertas Clínicas
+                        </h6>
+                        <span class="badge bg-danger" id="alertCount">0</span>
+                    </div>
+                    <div class="card-body p-0">
+                        <div id="alertsList" class="list-group list-group-flush">
+                            <!-- Alerts will be populated here -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recent Emotions -->
+                <div class="card trajectory-card">
+                    <div class="card-header bg-white">
+                        <h6 class="card-title mb-0">
+                            <i class="fas fa-history text-info me-2"></i>
+                            Emociones Recientes
+                        </h6>
+                    </div>
+                    <div class="card-body p-0">
+                        <div id="recentEmotions" class="list-group list-group-flush">
+                            <!-- Recent emotions will be populated here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Export Modal -->
+    <div class="modal fade" id="exportModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Exportar Trayectoria Emocional</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">Formato de Exportación</label>
+                        <select class="form-select" id="exportFormat">
+                            <option value="png">PNG (Imagen)</option>
+                            <option value="pdf">PDF (Documento)</option>
+                            <option value="svg">SVG (Vector)</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Período</label>
+                        <select class="form-select" id="exportTimeframe">
+                            <option value="1_week">1 Semana</option>
+                            <option value="1_month">1 Mes</option>
+                            <option value="3_months">3 Meses</option>
+                            <option value="6_months">6 Meses</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-primary" onclick="performExport()">
+                        <i class="fas fa-download me-1"></i>Exportar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        let trajectoryChart = null;
+        let emotionChart = null;
+        let currentPatientId = null;
+        let currentTimeframe = '1_week';
+
+        // Initialize dashboard
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeCharts();
+            setupEventListeners();
+            loadInitialData();
+        });
+
+        function setupEventListeners() {
+            // Timeframe change
+            document.querySelectorAll('input[name="timeframe"]').forEach(radio => {
+                radio.addEventListener('change', function() {
+                    currentTimeframe = this.value;
+                    if (currentPatientId) {
+                        loadPatientTrajectory();
+                    }
+                });
+            });
+        }
+
+        function initializeCharts() {
+            // Trajectory Chart
+            const trajectoryCtx = document.getElementById('trajectoryChart').getContext('2d');
+            trajectoryChart = new Chart(trajectoryCtx, {
+                type: 'line',
+                data: {
+                    labels: [],
+                    datasets: [{
+                        label: 'Polaridad Emocional',
+                        data: [],
+                        borderColor: '#007bff',
+                        backgroundColor: 'rgba(0, 123, 255, 0.1)',
+                        borderWidth: 3,
+                        fill: true,
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: false,
+                            min: -1,
+                            max: 1,
+                            grid: {
+                                color: 'rgba(0,0,0,0.1)'
+                            },
+                            ticks: {
+                                callback: function(value) {
+                                    return value.toFixed(1);
+                                }
+                            }
+                        },
+                        x: {
+                            grid: {
+                                color: 'rgba(0,0,0,0.1)'
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: true,
+                            position: 'top'
+                        },
+                        tooltip: {
+                            mode: 'index',
+                            intersect: false,
+                            callbacks: {
+                                label: function(context) {
+                                    return `Polaridad: ${context.parsed.y.toFixed(2)}`;
+                                }
+                            }
+                        }
+                    },
+                    interaction: {
+                        mode: 'nearest',
+                        axis: 'x',
+                        intersect: false
+                    }
+                }
+            });
+
+            // Emotion Distribution Chart
+            const emotionCtx = document.getElementById('emotionDistributionChart').getContext('2d');
+            emotionChart = new Chart(emotionCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: [],
+                    datasets: [{
+                        data: [],
+                        backgroundColor: [
+                            '#28a745', // happy
+                            '#6c757d', // sad
+                            '#dc3545', // angry
+                            '#ffc107', // fear
+                            '#17a2b8', // neutral
+                            '#fd7e14', // anxiety
+                            '#6f42c1'  // depression
+                        ]
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom'
+                        }
+                    }
+                }
+            });
+        }
+
+        function loadInitialData() {
+            // Load patients if user is psychologist or admin
+            {% if user_role in ['psychologist', 'admin'] %}
+            loadPatientsList();
+            {% endif %}
+        }
+
+        function loadPatientsList() {
+            fetch('/api/patients')
+                .then(response => response.json())
+                .then(data => {
+                    const selector = document.getElementById('patientSelector');
+                    selector.innerHTML = '<option value="">Seleccionar paciente...</option>';
+                    data.patients.forEach(patient => {
+                        const option = document.createElement('option');
+                        option.value = patient.id;
+                        option.textContent = `${patient.name} (${patient.id.slice(-8)})`;
+                        selector.appendChild(option);
+                    });
+                })
+                .catch(error => console.error('Error loading patients:', error));
+        }
+
+        function loadPatientTrajectory() {
+            const patientId = document.getElementById('patientSelector').value;
+            if (!patientId) return;
+
+            currentPatientId = patientId;
+            
+            // Show loading state
+            updateLoadingState(true);
+
+            fetch(`/api/emotion-trajectory/${patientId}?timeframe=${currentTimeframe}`)
+                .then(response => response.json())
+                .then(data => {
+                    updateTrajectoryChart(data.trajectory);
+                    updateEmotionDistribution(data.statistics.emotion_distribution);
+                    updateStatistics(data.statistics);
+                    updateAlerts(data.alerts);
+                    updateRecentEmotions(data.recent_emotions);
+                    updateLoadingState(false);
+                })
+                .catch(error => {
+                    console.error('Error loading trajectory:', error);
+                    updateLoadingState(false);
+                    showError('Error al cargar la trayectoria emocional');
+                });
+        }
+
+        function updateTrajectoryChart(trajectoryData) {
+            const labels = trajectoryData.map(point => 
+                new Date(point.timestamp).toLocaleDateString('es-ES', {
+                    month: 'short',
+                    day: 'numeric'
+                })
+            );
+            const polarities = trajectoryData.map(point => point.polarity);
+
+            trajectoryChart.data.labels = labels;
+            trajectoryChart.data.datasets[0].data = polarities;
+            trajectoryChart.update();
+        }
+
+        function updateEmotionDistribution(distribution) {
+            const emotions = Object.keys(distribution);
+            const percentages = Object.values(distribution);
+
+            emotionChart.data.labels = emotions.map(emotion => 
+                emotion.charAt(0).toUpperCase() + emotion.slice(1)
+            );
+            emotionChart.data.datasets[0].data = percentages;
+            emotionChart.update();
+        }
+
+        function updateStatistics(stats) {
+            document.getElementById('avgPolarity').textContent = 
+                stats.polarity_stats.mean.toFixed(2);
+            document.getElementById('totalSessions').textContent = 
+                stats.total_data_points;
+            document.getElementById('concerningEpisodes').textContent = 
+                stats.concerning_episodes;
+            
+            const trend = stats.polarity_stats.trend.interpretation;
+            const trendIcon = getTrendIcon(trend);
+            document.getElementById('trendDirection').innerHTML = trendIcon;
+        }
+
+        function getTrendIcon(trend) {
+            switch(trend) {
+                case 'improving':
+                    return '<i class="fas fa-arrow-up text-success"></i>';
+                case 'declining':
+                    return '<i class="fas fa-arrow-down text-danger"></i>';
+                case 'slightly_improving':
+                    return '<i class="fas fa-arrow-up text-warning"></i>';
+                case 'slightly_declining':
+                    return '<i class="fas fa-arrow-down text-warning"></i>';
+                default:
+                    return '<i class="fas fa-minus text-muted"></i>';
+            }
+        }
+
+        function updateAlerts(alerts) {
+            const alertsList = document.getElementById('alertsList');
+            const alertCount = document.getElementById('alertCount');
+            
+            alertCount.textContent = alerts.length;
+            alertsList.innerHTML = '';
+
+            if (alerts.length === 0) {
+                alertsList.innerHTML = `
+                    <div class="list-group-item text-center text-muted py-3">
+                        <i class="fas fa-check-circle me-2"></i>
+                        No hay alertas activas
+                    </div>
+                `;
+                return;
+            }
+
+            alerts.forEach(alert => {
+                const alertItem = document.createElement('div');
+                alertItem.className = `list-group-item alert-${alert.severity}`;
+                alertItem.innerHTML = `
+                    <div class="d-flex justify-content-between align-items-start">
+                        <div>
+                            <h6 class="mb-1">${alert.alert_type.replace('_', ' ')}</h6>
+                            <p class="mb-1 small">${alert.message}</p>
+                            <small class="text-muted">
+                                ${new Date(alert.created_at).toLocaleString('es-ES')}
+                            </small>
+                        </div>
+                        <span class="badge bg-${getSeverityColor(alert.severity)}">${alert.severity}</span>
+                    </div>
+                `;
+                alertsList.appendChild(alertItem);
+            });
+        }
+
+        function updateRecentEmotions(emotions) {
+            const recentList = document.getElementById('recentEmotions');
+            recentList.innerHTML = '';
+
+            if (emotions.length === 0) {
+                recentList.innerHTML = `
+                    <div class="list-group-item text-center text-muted py-3">
+                        No hay datos emocionales recientes
+                    </div>
+                `;
+                return;
+            }
+
+            emotions.slice(0, 5).forEach(emotion => {
+                const emotionItem = document.createElement('div');
+                emotionItem.className = 'list-group-item';
+                emotionItem.innerHTML = `
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <span class="emotion-indicator emotion-${emotion.emotion}"></span>
+                            ${emotion.emotion.charAt(0).toUpperCase() + emotion.emotion.slice(1)}
+                        </div>
+                        <div class="text-end">
+                            <small class="text-muted d-block">
+                                ${new Date(emotion.timestamp).toLocaleString('es-ES')}
+                            </small>
+                            <small class="badge bg-${emotion.polarity >= 0 ? 'success' : 'danger'}">
+                                ${emotion.polarity.toFixed(2)}
+                            </small>
+                        </div>
+                    </div>
+                `;
+                recentList.appendChild(emotionItem);
+            });
+        }
+
+        function getSeverityColor(severity) {
+            switch(severity) {
+                case 'high': return 'danger';
+                case 'medium': return 'warning';
+                case 'low': return 'info';
+                default: return 'secondary';
+            }
+        }
+
+        function updateLoadingState(loading) {
+            const charts = document.querySelectorAll('.chart-container');
+            charts.forEach(chart => {
+                if (loading) {
+                    chart.style.opacity = '0.5';
+                } else {
+                    chart.style.opacity = '1';
+                }
+            });
+        }
+
+        function showError(message) {
+            // Simple error display - could be enhanced with toast notifications
+            alert(message);
+        }
+
+        function refreshData() {
+            if (currentPatientId) {
+                loadPatientTrajectory();
+            }
+            document.getElementById('lastUpdate').textContent = 
+                new Date().toLocaleString('es-ES');
+        }
+
+        function exportTrajectory() {
+            if (!currentPatientId) {
+                alert('Por favor selecciona un paciente primero');
+                return;
+            }
+            
+            const modal = new bootstrap.Modal(document.getElementById('exportModal'));
+            modal.show();
+        }
+
+        function performExport() {
+            const format = document.getElementById('exportFormat').value;
+            const timeframe = document.getElementById('exportTimeframe').value;
+            
+            const url = `/api/export-trajectory/${currentPatientId}?format=${format}&timeframe=${timeframe}`;
+            
+            // Create download link
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `trajectory_${currentPatientId.slice(-8)}_${timeframe}.${format}`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            
+            // Close modal
+            const modal = bootstrap.Modal.getInstance(document.getElementById('exportModal'));
+            modal.hide();
+        }
+    </script>
+</body>
+</html>

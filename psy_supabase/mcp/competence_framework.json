@@ -1,0 +1,74 @@
+{
+    "emotional": {
+      "regulation": {
+        "description": "Capacidad de manejar y modular emociones intensas sin perder el control.",
+        "levels": ["weak", "moderate", "strong"]
+      },
+      "awareness": {
+        "description": "Habilidad de identificar, nombrar y diferenciar emociones en uno mismo.",
+        "levels": ["weak", "moderate", "strong"]
+      },
+      "frustration_tolerance": {
+        "description": "Capacidad de tolerar contratiempos o fracasos sin reaccionar de manera impulsiva.",
+        "levels": ["weak", "moderate", "strong"]
+      },
+      "emotional_expression": {
+        "description": "Habilidad para expresar emociones de manera clara y adecuada al contexto.",
+        "levels": ["weak", "moderate", "strong"]
+      }
+    },
+    "cognitive": {
+      "flexibility": {
+        "description": "Capacidad de cambiar de perspectiva, ajustar pensamientos y generar alternativas.",
+        "levels": ["weak", "moderate", "strong"]
+      },
+      "rumination": {
+        "description": "Tendencia a dar vueltas excesivas a pensamientos negativos o preocupaciones.",
+        "levels": ["low", "moderate", "high"]
+      },
+      "self_concept": {
+        "description": "Cómo se percibe y valora la propia identidad.",
+        "levels": ["negative", "neutral", "positive"]
+      },
+      "problem_solving": {
+        "description": "Capacidad de analizar problemas y desarrollar soluciones efectivas.",
+        "levels": ["weak", "moderate", "strong"]
+      }
+    },
+    "behavioral": {
+      "activation": {
+        "description": "Capacidad de iniciar y mantener actividades incluso en ausencia de motivación.",
+        "levels": ["weak", "moderate", "strong"]
+      },
+      "self_care": {
+        "description": "Nivel de mantenimiento de hábitos básicos de salud (sueño, alimentación, higiene, ejercicio).",
+        "levels": ["weak", "moderate", "strong"]
+      },
+      "avoidance_exposure": {
+        "description": "Grado en el que una persona evita o afronta de forma gradual situaciones temidas.",
+        "levels": ["avoidant", "balanced", "exposed"]
+      },
+      "goal_persistence": {
+        "description": "Capacidad de mantener esfuerzos hacia metas a pesar de obstáculos.",
+        "levels": ["weak", "moderate", "strong"]
+      }
+    },
+    "interpersonal": {
+      "assertiveness": {
+        "description": "Capacidad de expresar opiniones, necesidades y límites de manera respetuosa y firme.",
+        "levels": ["weak", "moderate", "strong"]
+      },
+      "social_support": {
+        "description": "Grado de acceso, confianza y uso efectivo de una red de apoyo social.",
+        "levels": ["low", "moderate", "high"]
+      },
+      "conflict_resolution": {
+        "description": "Capacidad de manejar desacuerdos y tensiones con estrategias positivas.",
+        "levels": ["weak", "moderate", "strong"]
+      },
+      "empathy": {
+        "description": "Habilidad para reconocer y conectar con las emociones de otros.",
+        "levels": ["weak", "moderate", "strong"]
+      }
+    }
+  }

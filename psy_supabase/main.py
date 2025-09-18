@@ -103,6 +103,7 @@ from psy_supabase.core.database import DatabaseManager
 from psy_supabase.core.model_manager import get_model_manager
 from psy_supabase.core.pain_point_detector import PainPointDetector
 from psy_supabase.core.rag_processor import RAGProcessor
+from psy_supabase.analytics.reports import ClinicalReportGenerator
 
 # Local imports
 from psy_supabase.utilities.common import is_github_actions
@@ -872,6 +873,133 @@ def stop_pain_point_monitoring() -> Union[Response, Tuple[Response, int]]:
     except Exception as e:
         logger.error(f"Error stopping pain point monitoring: {e}")
         return jsonify({"error": "Failed to stop monitoring"}), 500
+
+
+@app.route("/reports/<patient_id>", methods=["GET"])
+def get_patient_report(patient_id: str) -> Union[Response, Tuple[Response, int]]:
+    """Generate and return clinical report for a patient with role-based access control."""
+    try:
+        user_id = g.user_id
+        
+        # Get query parameters
+        timeframe = request.args.get("timeframe", "month")
+        format_type = request.args.get("format", "json")  # json or pdf
+        
+        # Validate timeframe
+        valid_timeframes = ["week", "month", "quarter", "year"]
+        if timeframe not in valid_timeframes:
+            return jsonify({"error": f"Invalid timeframe. Must be one of: {valid_timeframes}"}), 400
+        
+        # Validate format
+        valid_formats = ["json", "pdf"]
+        if format_type not in valid_formats:
+            return jsonify({"error": f"Invalid format. Must be one of: {valid_formats}"}), 400
+        
+        # Initialize clinical report generator
+        report_generator = ClinicalReportGenerator(g.db_manager, user_id)
+        
+        # Generate the report
+        logger.info(f"Generating {timeframe} clinical report for patient {patient_id} by user {user_id}")
+        
+        if format_type == "pdf":
+            # Generate PDF report
+            pdf_path = report_generator.export_to_pdf(patient_id, timeframe)
+            
+            if not pdf_path:
+                return jsonify({"error": "Failed to generate PDF report"}), 500
+            
+            # Return PDF file
+            from flask import send_file
+            import os
+            
+            try:
+                return send_file(
+                    pdf_path,
+                    as_attachment=True,
+                    download_name=f"clinical_report_{patient_id}_{timeframe}.pdf",
+                    mimetype="application/pdf"
+                )
+            finally:
+                # Clean up temporary file
+                try:
+                    os.unlink(pdf_path)
+                except Exception as cleanup_error:
+                    logger.warning(f"Failed to cleanup temporary PDF file: {cleanup_error}")
+        
+        else:
+            # Generate JSON report
+            report_data = report_generator.generate_patient_report(patient_id, timeframe)
+            
+            if not report_data:
+                return jsonify({"error": "Failed to generate report or no data available"}), 404
+            
+            # Add metadata
+            report_response = {
+                "report": report_data,
+                "metadata": {
+                    "generated_at": datetime.now().isoformat(),
+                    "generated_by": user_id,
+                    "patient_id": patient_id,
+                    "timeframe": timeframe,
+                    "format": "json"
+                }
+            }
+            
+            return jsonify(report_response)
+    
+    except PermissionError as e:
+        logger.warning(f"Access denied for user {user_id} requesting report for patient {patient_id}: {e}")
+        return jsonify({"error": "Access denied. You do not have permission to view this patient's report."}), 403
+    
+    except Exception as e:
+        logger.error(f"Error generating clinical report: {e}")
+        logger.error(traceback.format_exc())
+        return jsonify({"error": "Failed to generate clinical report"}), 500
+
+
+@app.route("/reports/<patient_id>/summary", methods=["GET"])
+def get_patient_report_summary(patient_id: str) -> Union[Response, Tuple[Response, int]]:
+    """Get a quick summary of patient data for report preview."""
+    try:
+        user_id = g.user_id
+        
+        # Initialize clinical report generator
+        report_generator = ClinicalReportGenerator(g.db_manager, user_id)
+        
+        # Get consolidated metrics
+        metrics = g.db_manager.get_consolidated_patient_metrics(patient_id, "month")
+        
+        if not metrics:
+            return jsonify({"error": "No data available for this patient"}), 404
+        
+        # Get active alerts count
+        active_alerts = g.db_manager.get_active_clinical_alerts(patient_id)
+        
+        summary = {
+            "patient_id": patient_id,
+            "summary": {
+                "total_sessions": metrics.get("total_sessions", 0),
+                "total_data_points": metrics.get("total_chunks", 0),
+                "active_alerts": len(active_alerts),
+                "avg_emotional_polarity": round(metrics.get("avg_polarity", 0), 2),
+                "engagement_score": round(metrics.get("engagement_score", 0), 2),
+                "most_common_theme": metrics.get("most_common_theme", "N/A"),
+                "first_session": metrics.get("first_session_date"),
+                "last_session": metrics.get("last_session_date")
+            },
+            "available_timeframes": ["week", "month", "quarter", "year"],
+            "available_formats": ["json", "pdf"]
+        }
+        
+        return jsonify(summary)
+    
+    except PermissionError as e:
+        logger.warning(f"Access denied for user {user_id} requesting summary for patient {patient_id}: {e}")
+        return jsonify({"error": "Access denied. You do not have permission to view this patient's data."}), 403
+    
+    except Exception as e:
+        logger.error(f"Error getting patient report summary: {e}")
+        return jsonify({"error": "Failed to get patient summary"}), 500
 
 
 if __name__ == "__main__":

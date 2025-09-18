@@ -36,7 +36,9 @@ from typing import TYPE_CHECKING, Any, Dict, List, Optional, Union
 
 from psy_supabase import get_package_logger
 from psy_supabase.memory.associative_memory import AssociativeMemory
+from psy_supabase.memory.memory_interface import MemoryLayerManager, RetrievalResult
 from psy_supabase.utilities.stop_words import stop_words
+from psy_supabase.core.meta_reflection import MetaReflectionMiddleware
 
 if TYPE_CHECKING:
     from psy_supabase.core.database import DatabaseManager
@@ -51,39 +53,28 @@ class DynamicRAGRetriever:
     Dynamic RAG retriever that delegates to RAGProcessor methods.
     """
 
-    def __init__(
-        self,
-        db_manager: "DatabaseManager",
-        session_id: Optional[str] = None,
-        persona: Optional[Any] = None,
-        query_mode: Optional[Any] = None,
-        embedding_provider: Optional[Any] = None,
-        rag_processor: Optional["RAGProcessor"] = None,
-    ):
+    def __init__(self, database_manager: "DatabaseManager", session_id: str, memory_layer_manager: Optional[MemoryLayerManager] = None):
         """
-        Initialize the dynamic RAG retriever.
+        Initialize the DynamicRAGRetriever with a database manager and session ID.
 
         Args:
-            db_manager: Database manager instance
-            session_id: Optional session ID for context filtering
-            embedding_provider: Optional custom embedding provider
-            persona: Optional persona to use for context retrieval
-            query_mode: Optional query mode (e.g., 'semantic', 'hybrid')
-            **kwargs: Additional parameters (to capture unexpected params)
+            database_manager: An instance of DatabaseManager for database operations.
+            session_id: The session ID for the current user session.
+            memory_layer_manager: Optional layered memory manager for advanced retrieval.
         """
-        self.db_manager = db_manager
+        self.db_manager = database_manager
         self.session_id = session_id
-        self.persona = persona
-        self.query_mode = query_mode or "hybrid"
-        self._embedding_provider = embedding_provider
-        self.rag_processor = rag_processor
-
-        # Initialize associative memory component for enhanced retrieval
-        self.associative_memory = AssociativeMemory()
+        self.cache = {}
+        self.associative_memory = AssociativeMemory(database_manager)
+        self.memory_layer_manager = memory_layer_manager
+        self.patient_id = None  # Will be set when needed for context retrieval
         self.memory_initialized = False
 
         self.query_cache: Dict[str, str] = {}  # Cache for query results
         self._last_raw_results: List[Dict[str, Any]] = []  # Store raw results for testing
+        
+        # Initialize meta-reflection middleware
+        self.meta_reflection = None  # Will be initialized when user_id is available
 
     def get_conversation_context(self, limit: int = 3) -> str:
         """
@@ -579,3 +570,261 @@ class DynamicRAGRetriever:
         # dict
         # Ensure content is string
         return {f"item_{i}": str(item.get("content", "")) for i, item in enumerate(items)}
+
+    def set_patient_id(self, patient_id: str):
+        """Set the patient ID for layered memory operations."""
+        self.patient_id = patient_id
+        
+        # Initialize meta-reflection middleware if not already done
+        if self.meta_reflection is None and patient_id:
+            try:
+                self.meta_reflection = MetaReflectionMiddleware(
+                    db_manager=self.db_manager,
+                    user_id=patient_id
+                )
+                logger.info(f"Initialized meta-reflection middleware for patient: {patient_id}")
+            except Exception as e:
+                logger.error(f"Failed to initialize meta-reflection middleware: {e}")
+
+    def process_response_with_reflection(
+        self, 
+        response: str, 
+        user_message: str, 
+        patient_id: Optional[str] = None
+    ) -> str:
+        """
+        Process response through meta-reflection middleware.
+        
+        Args:
+            response: Original chatbot response
+            user_message: User's input message
+            patient_id: Patient identifier (uses self.patient_id if not provided)
+            
+        Returns:
+            Response potentially augmented with metacognitive reflections
+        """
+        try:
+            # Use provided patient_id or fallback to instance patient_id
+            current_patient_id = patient_id or self.patient_id
+            
+            if not current_patient_id:
+                logger.warning("No patient ID available for meta-reflection processing")
+                return response
+            
+            # Initialize meta-reflection if needed
+            if self.meta_reflection is None:
+                self.set_patient_id(current_patient_id)
+            
+            if self.meta_reflection is None:
+                logger.warning("Meta-reflection middleware not available")
+                return response
+            
+            # Analyze message for patterns
+            analysis_result = self.meta_reflection.analyze_message(current_patient_id, user_message)
+            
+            # Inject reflection if needed
+            if analysis_result.get("reflection_needed", False):
+                reflected_response = self.meta_reflection.inject_meta_reflection(response, analysis_result)
+                
+                # Log reflection activity
+                reflection_type = analysis_result.get("reflection_type", "unknown")
+                logger.info(f"Meta-reflection injected: {reflection_type} for patient {current_patient_id}")
+                
+                return reflected_response
+            
+            return response
+            
+        except Exception as e:
+            logger.error(f"Error in meta-reflection processing: {e}")
+            return response  # Return original response on error
+
+    def enable_meta_reflection(self, enabled: bool = True) -> None:
+        """Enable or disable meta-reflection middleware."""
+        if self.meta_reflection:
+            self.meta_reflection.set_enabled(enabled)
+            logger.info(f"Meta-reflection {'enabled' if enabled else 'disabled'}")
+        else:
+            logger.warning("Meta-reflection middleware not initialized")
+
+    def get_reflection_stats(self) -> Dict[str, Any]:
+        """Get meta-reflection statistics."""
+        if self.meta_reflection and self.patient_id:
+            return self.meta_reflection.get_reflection_stats(self.patient_id)
+        return {"error": "Meta-reflection not available"}
+
+    def get_layered_memories(
+        self, 
+        query: str, 
+        query_context: Optional[Dict[str, Any]] = None,
+        limit: int = 10
+    ) -> List[RetrievalResult]:
+        """
+        Retrieve memories using the layered memory system.
+        
+        Args:
+            query: Query text to search for
+            query_context: Context information for layer routing
+            limit: Maximum number of results
+            
+        Returns:
+            List[RetrievalResult]: Retrieved memories from appropriate layers
+        """
+        try:
+            if not self.memory_layer_manager:
+                logger.warning("Layered memory manager not available, falling back to traditional retrieval")
+                return self._fallback_retrieval(query, limit)
+            
+            if not self.patient_id:
+                logger.warning("Patient ID not set for layered memory retrieval")
+                return []
+            
+            # Generate query embedding
+            query_embedding = self.db_manager.create_embedding(query)
+            if not query_embedding:
+                logger.error("Failed to generate query embedding")
+                return []
+            
+            # Infer context if not provided
+            if query_context is None:
+                query_context = self._infer_retrieval_context(query)
+            
+            # Retrieve from layered memory
+            results = self.memory_layer_manager.multi_layer_retrieve(
+                query_embedding=query_embedding,
+                patient_id=self.patient_id,
+                query_context=query_context,
+                total_limit=limit
+            )
+            
+            logger.info(f"Retrieved {len(results)} layered memories for query: {query[:50]}...")
+            return results
+            
+        except Exception as e:
+            logger.error(f"Error in layered memory retrieval: {e}")
+            return []
+
+    def get_contextual_knowledge(
+        self, 
+        query: str, 
+        include_layers: Optional[List[str]] = None,
+        **kwargs
+    ) -> str:
+        """
+        Get knowledge using both traditional and layered memory approaches.
+        
+        Args:
+            query: Query text
+            include_layers: Specific layers to include ("short_term", "medium_term", "long_term")
+            **kwargs: Additional parameters
+            
+        Returns:
+            Combined knowledge from multiple sources
+        """
+        try:
+            results = []
+            
+            # Get traditional knowledge
+            traditional_knowledge = self.get_knowledge_by_query(query, **kwargs)
+            if traditional_knowledge and traditional_knowledge != "No relevant interactions found.":
+                results.append(f"Recent Context:\n{traditional_knowledge}")
+            
+            # Get layered memories if available
+            if self.memory_layer_manager and self.patient_id:
+                query_context = self._determine_layer_context(query, include_layers)
+                layered_memories = self.get_layered_memories(query, query_context)
+                
+                if layered_memories:
+                    # Group by layer
+                    layer_results = {}
+                    for result in layered_memories:
+                        layer = result.retrieval_context.get("layer", "unknown")
+                        if layer not in layer_results:
+                            layer_results[layer] = []
+                        layer_results[layer].append(result.memory_item.content)
+                    
+                    # Format by layer
+                    for layer, contents in layer_results.items():
+                        layer_title = {
+                            "short_term": "Recent Sessions",
+                            "medium_term": "Weekly Patterns", 
+                            "long_term": "Long-term Themes"
+                        }.get(layer, f"{layer.title()} Memory")
+                        
+                        combined_content = "\n".join(contents[:3])  # Limit per layer
+                        results.append(f"{layer_title}:\n{combined_content}")
+            
+            return "\n\n".join(results) if results else "No relevant knowledge found."
+            
+        except Exception as e:
+            logger.error(f"Error getting contextual knowledge: {e}")
+            return self.get_knowledge_by_query(query, **kwargs)  # Fallback
+
+    def _infer_retrieval_context(self, query: str) -> Dict[str, Any]:
+        """Infer retrieval context from query text."""
+        context = {
+            "session_focused": False,
+            "pattern_detection": False,
+            "longitudinal": False
+        }
+        
+        query_lower = query.lower()
+        
+        # Session-focused keywords
+        session_keywords = ["hoy", "ahora", "actual", "presente", "esta sesión", "reciente", "today", "now", "current"]
+        if any(keyword in query_lower for keyword in session_keywords):
+            context["session_focused"] = True
+        
+        # Pattern detection keywords
+        pattern_keywords = ["patrón", "tendencia", "frecuente", "repetir", "semanal", "pattern", "trend", "frequent", "weekly"]
+        if any(keyword in query_lower for keyword in pattern_keywords):
+            context["pattern_detection"] = True
+        
+        # Longitudinal keywords
+        longitudinal_keywords = ["historial", "siempre", "desde hace", "meses", "años", "evolución", "history", "always", "months", "years", "evolution"]
+        if any(keyword in query_lower for keyword in longitudinal_keywords):
+            context["longitudinal"] = True
+        
+        return context
+
+    def _determine_layer_context(self, query: str, include_layers: Optional[List[str]]) -> Dict[str, Any]:
+        """Determine which layers to query based on include_layers and query content."""
+        context = self._infer_retrieval_context(query)
+        
+        # Override with explicit layer selection
+        if include_layers:
+            context["session_focused"] = "short_term" in include_layers
+            context["pattern_detection"] = "medium_term" in include_layers
+            context["longitudinal"] = "long_term" in include_layers
+        
+        return context
+
+    def _fallback_retrieval(self, query: str, limit: int) -> List[RetrievalResult]:
+        """Fallback to traditional retrieval when layered memory is not available."""
+        try:
+            # Use existing get_knowledge_by_query method
+            knowledge = self.get_knowledge_by_query(query, limit=limit)
+            
+            if not knowledge or knowledge == "No relevant interactions found.":
+                return []
+            
+            # Convert to RetrievalResult format for consistency
+            from psy_supabase.memory.memory_interface import MemoryItem
+            
+            memory_item = MemoryItem(
+                content=knowledge,
+                patient_id=self.patient_id or "unknown",
+                session_id=self.session_id,
+                memory_type="traditional"
+            )
+            
+            result = RetrievalResult(
+                memory_item=memory_item,
+                similarity_score=0.8,  # Default score for traditional retrieval
+                retrieval_context={"layer": "traditional", "method": "fallback"}
+            )
+            
+            return [result]
+            
+        except Exception as e:
+            logger.error(f"Error in fallback retrieval: {e}")
+            return []

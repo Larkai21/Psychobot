@@ -1,0 +1,2169 @@
+{
+  "metadata": {
+    "version": "1.0",
+    "processed_at": "2024-01-01T00:00:00Z",
+    "total_chunks": 263,
+    "max_chunk_size": 300
+  },
+  "statistics": {
+    "total_files": 27,
+    "total_chunks": 263,
+    "files_by_category": {
+      "life_changes": 4,
+      "psychoeducation": 5,
+      "risk": 2,
+      "scales": 2,
+      "selfhelp": 5,
+      "therapies": 9
+    },
+    "chunks_by_category": {
+      "life_changes": 16,
+      "psychoeducation": 67,
+      "risk": 22,
+      "scales": 13,
+      "selfhelp": 62,
+      "therapies": 83
+    }
+  },
+  "chunks": [
+    {
+      "text": "Envejecimiento, Jubilación y Bienestar Cambios comunes Jubilación: pérdida de rol, identidad o redes sociales Menor independencia física o económica Aislamiento por movilidad reducida o cambios de entorno Menopausia y otros cambios hormonales",
+      "source_file": "life_changes\\ageing.md",
+      "theme": "ageing",
+      "primary_emotion": "reflective",
+      "tags": [],
+      "chunk_id": "ageing_1"
+    },
+    {
+      "text": "Estancias prolongadas en hospitales o residencias Estrategias para el bienestar Mantener hobbies e intereses Conectar con familia, vecinos o actividades sociales Crear rutinas de ejercicio adaptado",
+      "source_file": "life_changes\\ageing.md",
+      "theme": "ageing",
+      "primary_emotion": "reflective",
+      "tags": [],
+      "chunk_id": "ageing_2"
+    },
+    {
+      "text": "Uso de tecnología para mantenerse conectado Practicar meditación o ejercicios de gratitud diaria Preparación para la jubilación Planificar actividades de ocio y proyectos personales Explorar voluntariado o emprendimientos pequeños",
+      "source_file": "life_changes\\ageing.md",
+      "theme": "ageing",
+      "primary_emotion": "reflective",
+      "tags": [],
+      "chunk_id": "ageing_3"
+    },
+    {
+      "text": "Mantener un sentido de propósito Beneficios esperados Mejora del ánimo y autoestima Prevención de depresión y aislamiento Favorecer un envejecimiento activo y saludable.",
+      "source_file": "life_changes\\ageing.md",
+      "theme": "ageing",
+      "primary_emotion": "reflective",
+      "tags": [],
+      "chunk_id": "ageing_4"
+    },
+    {
+      "text": "Psicosis Posparto Definición Trastorno mental grave que afecta a 1 de cada 1.000 madres Se presenta en las primeras semanas tras dar a luz y es una emergencia médica",
+      "source_file": "life_changes\\postpartum_psychosis.md",
+      "theme": "postpartum_psychosis",
+      "primary_emotion": "distressed",
+      "tags": [],
+      "chunk_id": "postpartum_psychosis_1"
+    },
+    {
+      "text": "Síntomas Alucinaciones o delirios Episodios de manía o depresión intensa Confusión severa, cambios de humor rápidos Agitación, insomnio extremo Tratamiento Ingreso hospitalario, idealmente en unidad madre-bebé Tratamiento farmacológico: antipsicóticos, estabilizadores del ánimo, antidepresivos Terapia psicológica en la recuperación En casos graves: ECT (terapia electroconvulsiva) Recuperación La mayoría logra recuperación completa con tratamiento",
+      "source_file": "life_changes\\postpartum_psychosis.md",
+      "theme": "postpartum_psychosis",
+      "primary_emotion": "distressed",
+      "tags": [],
+      "chunk_id": "postpartum_psychosis_2"
+    },
+    {
+      "text": "Puede durar de 6 a 12 meses Riesgo de recurrencia en futuros embarazos Apoyo Escuchar y brindar calma Apoyo en el cuidado del bebé y tareas domésticas",
+      "source_file": "life_changes\\postpartum_psychosis.md",
+      "theme": "postpartum_psychosis",
+      "primary_emotion": "distressed",
+      "tags": [],
+      "chunk_id": "postpartum_psychosis_3"
+    },
+    {
+      "text": "Recursos: Action on Postpartum Psychosis, NHS, Mind En caso de síntomas, acudir de inmediato a urgencias o llamar servicios de emergencia.",
+      "source_file": "life_changes\\postpartum_psychosis.md",
+      "theme": "postpartum_psychosis",
+      "primary_emotion": "distressed",
+      "tags": [],
+      "chunk_id": "postpartum_psychosis_4"
+    },
+    {
+      "text": "Embarazo y Salud Mental Cambios emocionales normales El embarazo puede traer alegría pero también estrés, ansiedad o bajo ánimo debido a: Cambios hormonales Preocupaciones por la maternidad y el parto Incomodidad física o problemas de salud Recomendaciones Mantener apoyo social (familia, amigos, pareja)",
+      "source_file": "life_changes\\pregnancy.md",
+      "theme": "pregnancy",
+      "primary_emotion": "anticipatory",
+      "tags": [],
+      "chunk_id": "pregnancy_1"
+    },
+    {
+      "text": "Cuidar la alimentación y hacer ejercicio leve-moderado Practicar técnicas de relajación y mindfulness Buscar apoyo profesional si la ansiedad o depresión afectan el día a día Ansiedad perinatal Síntomas: insomnio, tensión física, pensamientos catastróficos, irritabilidad",
+      "source_file": "life_changes\\pregnancy.md",
+      "theme": "pregnancy",
+      "primary_emotion": "anticipatory",
+      "tags": [],
+      "chunk_id": "pregnancy_2"
+    },
+    {
+      "text": "Manejo: Ejercicio suave (yoga prenatal, paseos) Respiración calmada y estructuración de preocupaciones Terapia psicológica recomendada si se mantiene Nota Es común experimentar oscilaciones emocionales en la etapa perinatal",
+      "source_file": "life_changes\\pregnancy.md",
+      "theme": "pregnancy",
+      "primary_emotion": "anticipatory",
+      "tags": [],
+      "chunk_id": "pregnancy_3"
+    },
+    {
+      "text": "Pedir ayuda y apoyo temprano favorece la adaptación.",
+      "source_file": "life_changes\\pregnancy.md",
+      "theme": "pregnancy",
+      "primary_emotion": "anticipatory",
+      "tags": [],
+      "chunk_id": "pregnancy_4"
+    },
+    {
+      "text": "Universidad y Bienestar Mental Retos comunes Estrés académico por exámenes, plazos y presión de rendimiento Adaptación a un nuevo entorno social y cultural Soledad y distancia de la familia Dificultad en crear nuevas amistades",
+      "source_file": "life_changes\\university.md",
+      "theme": "university",
+      "primary_emotion": "stressed",
+      "tags": [],
+      "chunk_id": "university_1"
+    },
+    {
+      "text": "Presión por cumplir expectativas propias o de otros Consejos de autocuidado Crear rutinas de sueño, ejercicio y estudio Mantener contacto regular con familia y amigos Hablar con compañeros y participar en actividades extracurriculares",
+      "source_file": "life_changes\\university.md",
+      "theme": "university",
+      "primary_emotion": "stressed",
+      "tags": [],
+      "chunk_id": "university_2"
+    },
+    {
+      "text": "Delegar y pedir ayuda ante sobrecarga Practicar técnicas de relajación y journaling Cuándo pedir apoyo Ansiedad o bajo ánimo persistente Dificultad para cumplir con compromisos académicos",
+      "source_file": "life_changes\\university.md",
+      "theme": "university",
+      "primary_emotion": "stressed",
+      "tags": [],
+      "chunk_id": "university_3"
+    },
+    {
+      "text": "Sensación constante de aislamiento social Idea de que “no puedo más” → buscar ayuda profesional de servicios de apoyo universitarios o terapia psicológica.",
+      "source_file": "life_changes\\university.md",
+      "theme": "university",
+      "primary_emotion": "stressed",
+      "tags": [],
+      "chunk_id": "university_4"
+    },
+    {
+      "text": "Trastornos de Ansiedad Generalizada (GAD) y Trastorno de Pánico Definición La guía del NICE (CG113) aborda el manejo de adultos con trastorno de ansiedad generalizada (GAD) y trastorno de pánico (con o sin agorafobia)",
+      "source_file": "psychoeducation\\anxiety.md",
+      "theme": "anxiety",
+      "primary_emotion": "anxious",
+      "tags": [],
+      "chunk_id": "anxiety_1"
+    },
+    {
+      "text": "El objetivo es lograr la remisión completa de síntomas, mejorar el funcionamiento y reducir recaídas",
+      "source_file": "psychoeducation\\anxiety.md",
+      "theme": "anxiety",
+      "primary_emotion": "anxious",
+      "tags": [],
+      "chunk_id": "anxiety_2"
+    },
+    {
+      "text": "Síntomas comunes Trastorno de Ansiedad Generalizada Preocupación excesiva y persistente (la mayoría de los días ≥6 meses) Dificultad para controlar la preocupación Asociados a: - Inquietud o nerviosismo - Fatiga fácil - Problemas de concentración - Irritabilidad - Tensión muscular - Alteraciones del sueño Trastorno de Pánico Ataques de pánico recurrentes e inesperados Al menos 1 mes de preocupación persistente por nuevas crisis o sus consecuencias Cambios de conducta para evitar futuras crisis Puede diagnosticarse con o sin agorafobia Factores que pueden influir Comorbilidades: depresión, otros trastornos de ansiedad, abuso de sustancias Historia personal: antecedentes de trastornos de salud mental y respuesta a tratamientos Factores médicos: condiciones físicas crónicas Contexto psicosocial: estresores, apoyo familiar y social Técnicas recomendadas (basadas en evidencia) Modelo de atención escalonado (Stepped Care) Para GAD Paso 1 – Detección y educación - Evaluación, información sobre el trastorno y monitorización activa",
+      "source_file": "psychoeducation\\anxiety.md",
+      "theme": "anxiety",
+      "primary_emotion": "anxious",
+      "tags": [],
+      "chunk_id": "anxiety_3"
+    },
+    {
+      "text": "Paso 2 – Intervenciones de baja intensidad - Autoayuda individual (materiales estructurados basados en TCC, mínimo 6 semanas) - Autoayuda guiada (5–7 sesiones breves con apoyo de un profesional) - Grupos psicoeducativos (6 sesiones de 2h, enfoque TCC interactivo) Paso 3 – Intervenciones de alta intensidad - Terapia cognitivo-conductual (TCC) (12–15 sesiones semanales de 1h) - Relajación aplicada (12–15 sesiones de 1h, con técnicas progresivas) Paso 4 – Casos complejos o refractarios - Evaluación especialista, planes de cuidados integrales, combinación de terapias y apoyo multidisciplinar",
+      "source_file": "psychoeducation\\anxiety.md",
+      "theme": "anxiety",
+      "primary_emotion": "anxious",
+      "tags": [],
+      "chunk_id": "anxiety_4"
+    },
+    {
+      "text": "Para Trastorno de Pánico Paso 1 – Reconocimiento y diagnóstico - Habilidades de consulta, diagnóstico estructurado, detección de comorbilidades",
+      "source_file": "psychoeducation\\anxiety.md",
+      "theme": "anxiety",
+      "primary_emotion": "anxious",
+      "tags": [],
+      "chunk_id": "anxiety_5"
+    },
+    {
+      "text": "Paso 2 – Tratamiento en atención primaria - Autoayuda no facilitada o facilitada - Información sobre grupos de apoyo - Promoción de ejercicio físico Paso 3 – Trastorno moderado-severo - Tratamiento de elección: TCC estructurada (7–14 h) - Debe ser impartida por profesionales entrenados, con protocolos basados en evidencia Paso 4 – Si 2 intervenciones no son efectivas - Derivación a salud mental especializada Paso 5 – Atención especializada - Evaluación integral (redes sociales, factores ambientales, riesgos) - Opciones: TCC avanzada, planeamiento de riesgos, atención multidisciplinar",
+      "source_file": "psychoeducation\\anxiety.md",
+      "theme": "anxiety",
+      "primary_emotion": "anxious",
+      "tags": [],
+      "chunk_id": "anxiety_6"
+    },
+    {
+      "text": "Técnicas destacadas Reestructuración cognitiva: identificar y cuestionar pensamientos irracionales Exposición gradual: afrontamiento progresivo de miedos y situaciones evitadas Relajación aplicada y mindfulness: reducción de síntomas somáticos Autoayuda estructurada: libros/recursos digitales basados en TCC Ejercicio físico: evidencia de beneficios en ansiedad y pánico Cuándo buscar ayuda profesional Síntomas de ansiedad o pánico persistentes (>6 meses en GAD, ≥1 mes tras crisis en pánico) Si generan un deterioro significativo en la vida diaria Riesgo de autolesión o ideación suicida Comorbilidades graves (depresión mayor, abuso de sustancias, trastornos de personalidad) Autogestión y autoayuda insuficientes En contexto de urgencias: crisis de pánico en urgencias que recurre sin causa médica Recursos adicionales NICE Guideline CG113 – Generalised anxiety disorder and panic disorder in adults (2011, actualizado 2020) OMS – mhGAP Intervention Guide APA – Understanding Anxiety",
+      "source_file": "psychoeducation\\anxiety.md",
+      "theme": "anxiety",
+      "primary_emotion": "anxious",
+      "tags": [],
+      "chunk_id": "anxiety_7"
+    },
+    {
+      "text": "Depresión en Adultos Definición La depresión es un trastorno del estado de ánimo caracterizado por pérdida de interés o placer en actividades normales, bajo estado de ánimo, y síntomas emocionales, cognitivos, físicos y conductuales",
+      "source_file": "psychoeducation\\depression.md",
+      "theme": "depression",
+      "primary_emotion": "depressed",
+      "tags": [],
+      "chunk_id": "depression_1"
+    },
+    {
+      "text": "El NICE (NG222, 2022) clasifica los episodios como: Menos severa → incluye depresión subumbral o leve (PHQ-9 &lt; 16) Más severa → incluye depresión moderada y grave (PHQ-9 ≥ 16)",
+      "source_file": "psychoeducation\\depression.md",
+      "theme": "depression",
+      "primary_emotion": "depressed",
+      "tags": [],
+      "chunk_id": "depression_2"
+    },
+    {
+      "text": "Síntomas comunes Estado de ánimo deprimido persistente Pérdida de interés o anhedonia Alteraciones del sueño (insomnio/hipersomnia) Cambios en el apetito/peso Fatiga o baja energía Dificultad para concentrarse o tomar decisiones Sentimientos de culpa o inutilidad Pensamientos de muerte o suicidio Agitación o enlentecimiento psicomotor Factores que pueden influir Historial personal y familiar de depresión o trastornos psiquiátricos Comorbilidades: ansiedad, adicciones, enfermedades físicas Factores sociales: aislamiento, dificultades económicas, desempleo Estresores importantes: duelo, divorcio, traumas previos Estilo cognitivo: rumiación, evitación Condiciones médicas y uso de sustancias Técnicas recomendadas (basadas en evidencia) Enfoque escalonado (Stepped/Matched Care) Menos severa: - Autoayuda guiada → materiales estructurados (CBT, activación conductual, psicoeducación), 6–8 sesiones",
+      "source_file": "psychoeducation\\depression.md",
+      "theme": "depression",
+      "primary_emotion": "depressed",
+      "tags": [],
+      "chunk_id": "depression_3"
+    },
+    {
+      "text": "- TCC grupal (8 sesiones, enfoque estructurado) - Activación conductual grupal - Ejercicio físico supervisado en grupo (≥10 semanas) - Mindfulness grupal / MBCT (8 sesiones)",
+      "source_file": "psychoeducation\\depression.md",
+      "theme": "depression",
+      "primary_emotion": "depressed",
+      "tags": [],
+      "chunk_id": "depression_4"
+    },
+    {
+      "text": "- Terapia interpersonal breve o consejería Más severa: - Terapia cognitivo-conductual individual (16 sesiones) orientada a cambios de pensamiento y conducta - Activación conductual individual estructurada - Interpersonal (IPT) o psicodinámica breve (STPP)",
+      "source_file": "psychoeducation\\depression.md",
+      "theme": "depression",
+      "primary_emotion": "depressed",
+      "tags": [],
+      "chunk_id": "depression_5"
+    },
+    {
+      "text": "- Terapias combinadas: psicológicas + farmacológicas Prevención de recaídas: - CBT en grupo o MBCT enfocados en habilidades preventivas - Continuación de tratamiento previo (psicoterapia o farmacológico) Casos crónicos y resistentes: - CBT enfocada en rumiación, evitación e interpersonal",
+      "source_file": "psychoeducation\\depression.md",
+      "theme": "depression",
+      "primary_emotion": "depressed",
+      "tags": [],
+      "chunk_id": "depression_6"
+    },
+    {
+      "text": "- Programas de rehabilitación y apoyo social - Terapias de pareja conductuales (si la relación es un factor clave) Psicoterapia adaptada a personas con discapacidad cognitiva, neurodesarrollo o comorbilidades",
+      "source_file": "psychoeducation\\depression.md",
+      "theme": "depression",
+      "primary_emotion": "depressed",
+      "tags": [],
+      "chunk_id": "depression_7"
+    },
+    {
+      "text": "Contextos especiales: depresión psicótica requiere abordaje multidisciplinar (antipsicóticos + psicoterapia), y en casos graves puede considerarse ECT o TMS Otras intervenciones psicoeducativas Educación sobre el trastorno y opciones de tratamiento",
+      "source_file": "psychoeducation\\depression.md",
+      "theme": "depression",
+      "primary_emotion": "depressed",
+      "tags": [],
+      "chunk_id": "depression_8"
+    },
+    {
+      "text": "Apoyo para el autocuidado: sueño, alimentación saludable, reducción de alcohol, ejercicio regular Estrategias de afrontamiento no evitativas Planes de prevención y preparación ante recaídas Cuándo buscar ayuda profesional Síntomas persistentes ≥2 semanas, con deterioro funcional significativo",
+      "source_file": "psychoeducation\\depression.md",
+      "theme": "depression",
+      "primary_emotion": "depressed",
+      "tags": [],
+      "chunk_id": "depression_9"
+    },
+    {
+      "text": "Riesgo de autolesión o pensamientos suicidas Depresión combinada con ansiedad grave, trastornos de personalidad o psicosis Fracaso de estrategias iniciales de autoayuda y empeoramiento progresivo Necesidad de hospitalización (crisis suicida, autonegligencia marcada, riesgo de daño a otros)",
+      "source_file": "psychoeducation\\depression.md",
+      "theme": "depression",
+      "primary_emotion": "depressed",
+      "tags": [],
+      "chunk_id": "depression_10"
+    },
+    {
+      "text": "Recursos adicionales NICE Guideline – Depression in adults: treatment and management (NG222, 2022) APA – Depression OMS – mhGAP Intervention Guide Nota: Este contenido es psicoeducativo y no sustituye la atención clínica profesional.",
+      "source_file": "psychoeducation\\depression.md",
+      "theme": "depression",
+      "primary_emotion": "depressed",
+      "tags": [],
+      "chunk_id": "depression_11"
+    },
+    {
+      "text": "Trastorno Obsesivo-Compulsivo (TOC) y Trastorno Dismórfico Corporal (TDC) Definición TOC: caracterizado por obsesiones (pensamientos, imágenes o impulsos intrusivos y no deseados) y compulsiones (comportamientos o actos mentales repetitivos) que buscan reducir la ansiedad generada por las obsesiones",
+      "source_file": "psychoeducation\\ocd.md",
+      "theme": "ocd",
+      "primary_emotion": "obsessive",
+      "tags": [],
+      "chunk_id": "ocd_1"
+    },
+    {
+      "text": "Puede causar incapacidad significativa y malestar TDC: caracterizado por preocupación excesiva por un defecto imaginario o mínimo en la apariencia física, acompañado de conductas repetitivas como mirarse en el espejo, comparación excesiva, camuflaje, búsqueda de seguridad o manipulación cutánea",
+      "source_file": "psychoeducation\\ocd.md",
+      "theme": "ocd",
+      "primary_emotion": "obsessive",
+      "tags": [],
+      "chunk_id": "ocd_2"
+    },
+    {
+      "text": "Síntomas Comunes TOC Obsesiones frecuentes: contaminación, dudas, pensamientos sexuales/agresivos, simetría Compulsiones más comunes: lavado, verificación, orden, repetición mental Interferencia marcada en la vida diaria TDC Preocupación excesiva por apariencia, incluso sin defecto real",
+      "source_file": "psychoeducation\\ocd.md",
+      "theme": "ocd",
+      "primary_emotion": "obsessive",
+      "tags": [],
+      "chunk_id": "ocd_3"
+    },
+    {
+      "text": "Conductas: mirarse en el espejo, comparar rasgos, camuflarse, manipular piel Malestar y prejuicio en la funcionalidad laboral, social, o académica Alta comorbilidad con depresión y riesgo de suicidio Factores Influyentes Antecedentes familiares y genéticos",
+      "source_file": "psychoeducation\\ocd.md",
+      "theme": "ocd",
+      "primary_emotion": "obsessive",
+      "tags": [],
+      "chunk_id": "ocd_4"
+    },
+    {
+      "text": "Historia de ansiedad, depresión, abuso de sustancias o trastornos de alimentación Contextos culturales o religiosos que refuercen ciertas obsesiones Factores psicosociales (por ejemplo, bullying sobre apariencia) Mayor riesgo en consultas de dermatología o cirugía estética",
+      "source_file": "psychoeducation\\ocd.md",
+      "theme": "ocd",
+      "primary_emotion": "obsessive",
+      "tags": [],
+      "chunk_id": "ocd_5"
+    },
+    {
+      "text": "Técnicas Recomendadas Principios de cuidado Asegurar continuidad entre atención primaria, secundaria y servicios especializados Involucrar a familias y cuidadores cuando sea adecuado Considerar la dimensión cultural y religiosa de los síntomas (ej: escrupulosidad)",
+      "source_file": "psychoeducation\\ocd.md",
+      "theme": "ocd",
+      "primary_emotion": "obsessive",
+      "tags": [],
+      "chunk_id": "ocd_6"
+    },
+    {
+      "text": "Modelo de atención escalonada Concienciación/Detección: aumentar capacidades de los profesionales y colaboración con organizaciones comunitarias Detección temprana/Valoración clínica: preguntas guía para TOC y TDC, evaluar ideación suicida",
+      "source_file": "psychoeducation\\ocd.md",
+      "theme": "ocd",
+      "primary_emotion": "obsessive",
+      "tags": [],
+      "chunk_id": "ocd_7"
+    },
+    {
+      "text": "Tratamiento (pasos 3–5): desde intervenciones psicológicas de baja intensidad hasta tratamientos combinados especializados Tratamientos intensivos: derivar a equipos multidisciplinarios especializados en casos refractarios",
+      "source_file": "psychoeducation\\ocd.md",
+      "theme": "ocd",
+      "primary_emotion": "obsessive",
+      "tags": [],
+      "chunk_id": "ocd_8"
+    },
+    {
+      "text": "Servicios de ingreso: en casos de riesgo vital, autoabandono, comorbilidades severas o ausencia de respuesta a intervenciones previas Tratamiento psicológico Primera línea (TOC y TDC): Terapia cognitivo-conductual (TCC) con exposición y prevención de respuesta (EPR)",
+      "source_file": "psychoeducation\\ocd.md",
+      "theme": "ocd",
+      "primary_emotion": "obsessive",
+      "tags": [],
+      "chunk_id": "ocd_9"
+    },
+    {
+      "text": "Opciones de baja intensidad (adultos, síntomas leves): - Autoayuda estructurada guiada con TCC + EPR - TCC breve por teléfono - TCC en grupo Moderada a severa afectación: - TCC intensiva (>10 horas)",
+      "source_file": "psychoeducation\\ocd.md",
+      "theme": "ocd",
+      "primary_emotion": "obsessive",
+      "tags": [],
+      "chunk_id": "ocd_10"
+    },
+    {
+      "text": "- SSRI (ejemplo: fluoxetina, sertralina, fluvoxamina) como alternativa o combinación Severa afectación: - Combinar TCC (EPR) + SSRI Tratamientos en niños y adolescentes Leve (TOC): autoayuda guiada + apoyo familiar Moderada-Severa (TOC/TDC): TCC (incluye familia y adaptada al desarrollo)",
+      "source_file": "psychoeducation\\ocd.md",
+      "theme": "ocd",
+      "primary_emotion": "obsessive",
+      "tags": [],
+      "chunk_id": "ocd_11"
+    },
+    {
+      "text": "Primera línea (TDC infantil): TCC (incluye familia) Si falla la TCC: considerar SSRI bajo control estricto psiquiátrico Comorbilidad (ej depresión): ajustar el plan siguiendo guías específicas",
+      "source_file": "psychoeducation\\ocd.md",
+      "theme": "ocd",
+      "primary_emotion": "obsessive",
+      "tags": [],
+      "chunk_id": "ocd_12"
+    },
+    {
+      "text": "Farmacoterapia Adultos: - Inicial: SSRI (fluoxetina, sertralina, fluvoxamina, paroxetina, citalopram) - TDC: preferido fluoxetina - Si no hay respuesta: intentar otro SSRI; considerar clomipramina - Casos resistentes: añadir antipsicótico (ej",
+      "source_file": "psychoeducation\\ocd.md",
+      "theme": "ocd",
+      "primary_emotion": "obsessive",
+      "tags": [],
+      "chunk_id": "ocd_13"
+    },
+    {
+      "text": "risperidona) o combinaciones bajo especialista Niños/adolescentes: - SSRIs indicados: sertralina o fluvoxamina (TOC), fluoxetina (TDC) - Solo bajo psiquiatría infanto-juvenil y siempre con TCC concomitante",
+      "source_file": "psychoeducation\\ocd.md",
+      "theme": "ocd",
+      "primary_emotion": "obsessive",
+      "tags": [],
+      "chunk_id": "ocd_14"
+    },
+    {
+      "text": "No recomendados: antipsicóticos como monoterapia, IMAOs, ISRSN, ansiolíticos (salvo acompañar inicio con SSRI) Casos resistentes Derivar a equipos especializados multidisciplinarios Opciones: EPR intensiva, clomipramina combinada con SSRI, añadir antipsicótico",
+      "source_file": "psychoeducation\\ocd.md",
+      "theme": "ocd",
+      "primary_emotion": "obsessive",
+      "tags": [],
+      "chunk_id": "ocd_15"
+    },
+    {
+      "text": "Neurocirugía: no recomendada, solo en casos extremadamente refractarios bajo protocolos muy estrictos Cuándo Buscar Ayuda Profesional Síntomas de TOC o TDC que interfieren notablemente con la vida diaria Ideas suicidas o conductas de riesgo Ausencia de respuesta a autoayuda o terapias iniciales",
+      "source_file": "psychoeducation\\ocd.md",
+      "theme": "ocd",
+      "primary_emotion": "obsessive",
+      "tags": [],
+      "chunk_id": "ocd_16"
+    },
+    {
+      "text": "Presentación en la infancia con repercusión escolar/familiar marcada Recursos Adicionales Guía NICE CG31 (2005, actualizada 2024): tratamiento del TOC y TDC Organismos de apoyo: asociaciones de pacientes con TOC/TDC y familiares",
+      "source_file": "psychoeducation\\ocd.md",
+      "theme": "ocd",
+      "primary_emotion": "obsessive",
+      "tags": [],
+      "chunk_id": "ocd_17"
+    },
+    {
+      "text": "Definiciones clave: - Obsessions: pensamientos, imágenes o impulsos intrusivos y no deseados - Compulsions: conductas repetitivas (manifiestas o mentales) para reducir ansiedad - TDC*: preocupación intensa por fallas físicas percibidas",
+      "source_file": "psychoeducation\\ocd.md",
+      "theme": "ocd",
+      "primary_emotion": "obsessive",
+      "tags": [],
+      "chunk_id": "ocd_18"
+    },
+    {
+      "text": "--- ⚠️ Nota: Esta información es un resumen educativo de la guía NICE y no sustituye una evaluación profesional individualizada.",
+      "source_file": "psychoeducation\\ocd.md",
+      "theme": "ocd",
+      "primary_emotion": "obsessive",
+      "tags": [],
+      "chunk_id": "ocd_19"
+    },
+    {
+      "text": "Trastorno de Estrés Postraumático (TEPT) Definición El trastorno de estrés postraumático (TEPT) es un trastorno de ansiedad que puede desarrollarse después de vivir o presenciar un evento traumático de carácter extremo, como accidentes graves, agresiones físicas o sexuales, abuso prolongado, conflictos bélicos, tortura o complicaciones graves de salud",
+      "source_file": "psychoeducation\\ptsd.md",
+      "theme": "ptsd",
+      "primary_emotion": "traumatized",
+      "tags": [],
+      "chunk_id": "ptsd_1"
+    },
+    {
+      "text": "Afecta a personas de todas las edades y puede presentarse inmediatamente después del trauma o tiempo después Síntomas Comunes Reexperimentación: recuerdos vívidos, flashbacks, pesadillas, pensamientos intrusivos Evitación: rechazo a hablar del evento, evitar lugares o personas relacionadas",
+      "source_file": "psychoeducation\\ptsd.md",
+      "theme": "ptsd",
+      "primary_emotion": "traumatized",
+      "tags": [],
+      "chunk_id": "ptsd_2"
+    },
+    {
+      "text": "Hiperactivación: hipervigilancia, sobresaltos, irritabilidad, problemas de concentración, insomnio Alteraciones emocionales y cognitivas: emociones negativas intensas, recuerdos fragmentados, visión negativa de uno mismo o del mundo Disociación o embotamiento emocional",
+      "source_file": "psychoeducation\\ptsd.md",
+      "theme": "ptsd",
+      "primary_emotion": "traumatized",
+      "tags": [],
+      "chunk_id": "ptsd_3"
+    },
+    {
+      "text": "Dificultades interpersonales y percepción negativa de sí mismo (frecuente en el TEPT complejo) Factores Influyentes Exposición a traumas intensos, prolongados o repetidos Antecedentes de abuso infantil o violencia doméstica Situaciones sociales de riesgo (conflictos, migración forzada, refugio)",
+      "source_file": "psychoeducation\\ptsd.md",
+      "theme": "ptsd",
+      "primary_emotion": "traumatized",
+      "tags": [],
+      "chunk_id": "ptsd_4"
+    },
+    {
+      "text": "Comorbilidades psiquiátricas (depresión, abuso de sustancias) Contexto cultural en la percepción y comunicación del trauma Técnicas Recomendadas Intervenciones en niños y jóvenes Active monitoring (vigilancia activa) si los síntomas son subclínicos en el primer mes",
+      "source_file": "psychoeducation\\ptsd.md",
+      "theme": "ptsd",
+      "primary_emotion": "traumatized",
+      "tags": [],
+      "chunk_id": "ptsd_5"
+    },
+    {
+      "text": "Terapia cognitivo-conductual focalizada en trauma (TCC-T): individual o grupal (7–17 años) Implicar a padres o cuidadores en el proceso No usar fármacos en menores para prevención o tratamiento Considerar EMDR (desensibilización y reprocesamiento por movimientos oculares) si no responden a TCC",
+      "source_file": "psychoeducation\\ptsd.md",
+      "theme": "ptsd",
+      "primary_emotion": "traumatized",
+      "tags": [],
+      "chunk_id": "ptsd_6"
+    },
+    {
+      "text": "Intervenciones en adultos TCC focalizada en trauma: incluye terapia de exposición prolongada, terapia de procesamiento cognitivo, terapia narrativa EMDR: indicada especialmente tras 3 meses y en traumas no relacionados con combate",
+      "source_file": "psychoeducation\\ptsd.md",
+      "theme": "ptsd",
+      "primary_emotion": "traumatized",
+      "tags": [],
+      "chunk_id": "ptsd_7"
+    },
+    {
+      "text": "TCC computarizada apoyada (guiada por un profesional), siempre que no haya síntomas graves de disociación o riesgo suicida TCC sintomática: p.ej en problemas de sueño o ira, solo si no se puede iniciar terapia trauma-focalizada",
+      "source_file": "psychoeducation\\ptsd.md",
+      "theme": "ptsd",
+      "primary_emotion": "traumatized",
+      "tags": [],
+      "chunk_id": "ptsd_8"
+    },
+    {
+      "text": "Psicoeducación: sobre síntomas de trauma y técnicas de regulación emocional Grupos de apoyo entre pares (facilitados por profesionales) Evitar debriefing psicológico inmediato tras el trauma (puede ser dañino) Tratamiento farmacológico en adultos No usar fármacos para prevención",
+      "source_file": "psychoeducation\\ptsd.md",
+      "theme": "ptsd",
+      "primary_emotion": "traumatized",
+      "tags": [],
+      "chunk_id": "ptsd_9"
+    },
+    {
+      "text": "Considerar ISRS (sertralina, paroxetina) o venlafaxina en adultos que lo prefieran, con seguimientos regulares Risperidona u otros antipsicóticos: solo como adyuvante en casos graves resistentes, bajo supervisión especializada",
+      "source_file": "psychoeducation\\ptsd.md",
+      "theme": "ptsd",
+      "primary_emotion": "traumatized",
+      "tags": [],
+      "chunk_id": "ptsd_10"
+    },
+    {
+      "text": "Cuándo Buscar Ayuda Profesional Síntomas de reexperimentación, evitación o hipervigilancia que duran más de 4 semanas Deterioro notable en el funcionamiento social, laboral o académico Pensamientos de autolesión, depresión grave o conductas de riesgo",
+      "source_file": "psychoeducation\\ptsd.md",
+      "theme": "ptsd",
+      "primary_emotion": "traumatized",
+      "tags": [],
+      "chunk_id": "ptsd_11"
+    },
+    {
+      "text": "Presencia de TEPT complejo con disociación, vergüenza y problemas interpersonales severos Recursos Adicionales Guía NICE NG116 (2018, actualizaciones 2024): prevención, diagnóstico y tratamiento del TEPT en niños, adolescentes y adultos",
+      "source_file": "psychoeducation\\ptsd.md",
+      "theme": "ptsd",
+      "primary_emotion": "traumatized",
+      "tags": [],
+      "chunk_id": "ptsd_12"
+    },
+    {
+      "text": "Definiciones clave: - TEPT complejo: patrón derivado de traumas repetidos y prolongados con afectación de la regulación emocional, autoimagen y relaciones - Active monitoring: vigilancia activa en las primeras semanas tras el trauma",
+      "source_file": "psychoeducation\\ptsd.md",
+      "theme": "ptsd",
+      "primary_emotion": "traumatized",
+      "tags": [],
+      "chunk_id": "ptsd_13"
+    },
+    {
+      "text": "Organismos de apoyo: asociaciones de víctimas, ONGs de refugiados, servicios nacional y comunitarios de salud mental --- ⚠️ Nota: Esta información es educativa y no sustituye una evaluación profesional Ante síntomas persistentes o graves, buscar ayuda médica especializada.",
+      "source_file": "psychoeducation\\ptsd.md",
+      "theme": "ptsd",
+      "primary_emotion": "traumatized",
+      "tags": [],
+      "chunk_id": "ptsd_14"
+    },
+    {
+      "text": "Trastorno de Ansiedad Social (Fobia Social) Definición El trastorno de ansiedad social, también conocido como fobia social, es un trastorno de ansiedad caracterizado por un miedo intenso y persistente a situaciones sociales o de rendimiento en las que la persona está expuesta a la posible observación o juicio de los demás",
+      "source_file": "psychoeducation\\social_anxiety.md",
+      "theme": "social_anxiety",
+      "primary_emotion": "anxious",
+      "tags": [],
+      "chunk_id": "social_anxiety_1"
+    },
+    {
+      "text": "Tiene un inicio temprano (mediana alrededor de los 13 años) y es uno de los trastornos ansiosos más persistentes Síntomas Comunes Miedo y ansiedad intensos en situaciones sociales (reuniones, hablar en público, comer en presencia de otros, hablar con figuras de autoridad)",
+      "source_file": "psychoeducation\\social_anxiety.md",
+      "theme": "social_anxiety",
+      "primary_emotion": "anxious",
+      "tags": [],
+      "chunk_id": "social_anxiety_2"
+    },
+    {
+      "text": "Evitación marcada de interacciones sociales o soportarlas con gran malestar Síntomas físicos: rubor, sudoración, temblores, palpitaciones, náuseas Pensamientos negativos anticipatorios y posteriores al evento (rumiación) Imagen negativa de uno mismo, miedo a parecer incompetente, aburrido o ridículo",
+      "source_file": "psychoeducation\\social_anxiety.md",
+      "theme": "social_anxiety",
+      "primary_emotion": "anxious",
+      "tags": [],
+      "chunk_id": "social_anxiety_3"
+    },
+    {
+      "text": "En niños y adolescentes: llanto, retraimiento, congelamiento o rabietas; dificultades en actividades escolares y sociales Factores que Influyen Vulnerabilidad genética y biológica Experiencias tempranas adversas (crianza sobreprotectora, crítica severa, bullying, aislamiento social)",
+      "source_file": "psychoeducation\\social_anxiety.md",
+      "theme": "social_anxiety",
+      "primary_emotion": "anxious",
+      "tags": [],
+      "chunk_id": "social_anxiety_4"
+    },
+    {
+      "text": "Comorbilidades frecuentes: depresión, abuso de sustancias, GAD, pánico, TEPT, otros trastornos de ansiedad Estigmatización, creencias culturales sobre desempeño y vergüenza social Factores de mantenimiento: autoconciencia excesiva, conductas de seguridad, evitación, rumiación post-evento",
+      "source_file": "psychoeducation\\social_anxiety.md",
+      "theme": "social_anxiety",
+      "primary_emotion": "anxious",
+      "tags": [],
+      "chunk_id": "social_anxiety_5"
+    },
+    {
+      "text": "Técnicas y Tratamientos Recomendados Para Adultos Terapia cognitivo-conductual individual (CBT) desarrollada específicamente para fobia social: - Modelos de Clark & Wells o Heimberg",
+      "source_file": "psychoeducation\\social_anxiety.md",
+      "theme": "social_anxiety",
+      "primary_emotion": "anxious",
+      "tags": [],
+      "chunk_id": "social_anxiety_6"
+    },
+    {
+      "text": "- Incluye psicoeducación, reestructuración cognitiva, experimentos conductuales, exposición gradual, modificación de creencias centrales, prevención de recaídas Autoayuda guiada basada en CBT en quienes rechacen terapia individual",
+      "source_file": "psychoeducation\\social_anxiety.md",
+      "theme": "social_anxiety",
+      "primary_emotion": "anxious",
+      "tags": [],
+      "chunk_id": "social_anxiety_7"
+    },
+    {
+      "text": "Farmacoterapia (si rechazan CBT o es insuficiente): - Primera línea: ISRS (sertralina, escitalopram) - Alternativas: fluvoxamina, paroxetina o ISRN (venlafaxina) - En no respondedores: IMAOs (fenelzina, moclobemida)",
+      "source_file": "psychoeducation\\social_anxiety.md",
+      "theme": "social_anxiety",
+      "primary_emotion": "anxious",
+      "tags": [],
+      "chunk_id": "social_anxiety_8"
+    },
+    {
+      "text": "Psicoterapia psicodinámica breve desarrollada para ansiedad social (menos eficaz y coste-efectiva que CBT) Para Niños y Jóvenes CBT individual o grupal adaptada (8–12 sesiones; exposición gradual; entrenamiento en habilidades sociales)",
+      "source_file": "psychoeducation\\social_anxiety.md",
+      "theme": "social_anxiety",
+      "primary_emotion": "anxious",
+      "tags": [],
+      "chunk_id": "social_anxiety_9"
+    },
+    {
+      "text": "Involucrar a padres/cuidadores con psicoeducación y estrategias de apoyo familiar En adolescentes mayores (15+), puede usarse CBT de adultos si son capaces a nivel cognitivo/emocional No se recomienda farmacoterapia rutinaria en menores",
+      "source_file": "psychoeducation\\social_anxiety.md",
+      "theme": "social_anxiety",
+      "primary_emotion": "anxious",
+      "tags": [],
+      "chunk_id": "social_anxiety_10"
+    },
+    {
+      "text": "Intervenciones no recomendadas Tratamientos farmacológicos como anticonvulsivantes, antipsicóticos, benzodiacepinas o tricíclicos Terapias de soporte simples o mindfulness como abordaje exclusivo",
+      "source_file": "psychoeducation\\social_anxiety.md",
+      "theme": "social_anxiety",
+      "primary_emotion": "anxious",
+      "tags": [],
+      "chunk_id": "social_anxiety_11"
+    },
+    {
+      "text": "Remedios herbales (ej: hipérico) o tratamientos invasivos como toxina botulínica o simpatectomía torácica Cuándo Buscar Ayuda Profesional El miedo social interfiere de forma significativa con el rendimiento académico, laboral o las relaciones personales",
+      "source_file": "psychoeducation\\social_anxiety.md",
+      "theme": "social_anxiety",
+      "primary_emotion": "anxious",
+      "tags": [],
+      "chunk_id": "social_anxiety_12"
+    },
+    {
+      "text": "Presencia de síntomas persistentes desde la adolescencia Se utilizan sustancias (alcohol, drogas) para enfrentar situaciones sociales Existencia de comorbilidades como depresión y riesgo de autolesión",
+      "source_file": "psychoeducation\\social_anxiety.md",
+      "theme": "social_anxiety",
+      "primary_emotion": "anxious",
+      "tags": [],
+      "chunk_id": "social_anxiety_13"
+    },
+    {
+      "text": "Los síntomas persisten más de 6 meses y no mejoran con afrontamiento personal o estrategias de autocontrol Recursos Adicionales Escalas de evaluación: - Mini-SPIN, SPIN, LSAS, SPAI-C, MASC, RCADS, SCAS Guías clínicas: - NICE CG159: Social anxiety disorder (2013, actualizado 2024)",
+      "source_file": "psychoeducation\\social_anxiety.md",
+      "theme": "social_anxiety",
+      "primary_emotion": "anxious",
+      "tags": [],
+      "chunk_id": "social_anxiety_14"
+    },
+    {
+      "text": "- NICE QS53: Quality standard para ansiedad social Recursos psicoeducativos: libros de autoayuda basados en CBT Servicios: terapias presenciales o por IAPT (Improving Access to Psychological Therapies, Reino Unido) --- Nota: Esta información es un resumen educativo basado en las guías NICE",
+      "source_file": "psychoeducation\\social_anxiety.md",
+      "theme": "social_anxiety",
+      "primary_emotion": "anxious",
+      "tags": [],
+      "chunk_id": "social_anxiety_15"
+    },
+    {
+      "text": "No sustituye la consulta profesional con un especialista en salud mental.",
+      "source_file": "psychoeducation\\social_anxiety.md",
+      "theme": "social_anxiety",
+      "primary_emotion": "anxious",
+      "tags": [],
+      "chunk_id": "social_anxiety_16"
+    },
+    {
+      "text": "Recursos en caso de crisis 🚨 Contactar de inmediato en situaciones críticas Si en este momento experimentas pensamientos de hacerte daño o suicidio, o si percibes que alguien más está en riesgo inmediato: 📞 España: Llama al 024 (Teléfono 24h de Atención a la Conducta Suicida) o al 112 (emergencias)",
+      "source_file": "risk\\crisis_signposting.md",
+      "theme": "crisis_signposting",
+      "primary_emotion": "urgent",
+      "tags": [],
+      "chunk_id": "crisis_signposting_1",
+      "critical": true
+    },
+    {
+      "text": "📞 Latinoamérica: marca 911 en la mayoría de países o consulta líneas locales de emergencias psicológicas 📞 EE.UU y Puerto Rico: 988 Suicide & Crisis Lifeline (disponible 24/7) 🧑‍⚕️ Recursos profesionales Contacta directamente con tu médico de cabecera o psicólogo/a de referencia",
+      "source_file": "risk\\crisis_signposting.md",
+      "theme": "crisis_signposting",
+      "primary_emotion": "urgent",
+      "tags": [],
+      "chunk_id": "crisis_signposting_2",
+      "critical": true
+    },
+    {
+      "text": "Acude a urgencias hospitalarias si sientes que tu vida o la de otros está en grave peligro 🌍 Recursos internacionales International Suicide Hotlines by Country Nota: Este documento tiene carácter informativo No sustituye la atención profesional",
+      "source_file": "risk\\crisis_signposting.md",
+      "theme": "crisis_signposting",
+      "primary_emotion": "urgent",
+      "tags": [],
+      "chunk_id": "crisis_signposting_3",
+      "critical": true
+    },
+    {
+      "text": "Si crees que corres peligro, busca ayuda de emergencia sin demora.",
+      "source_file": "risk\\crisis_signposting.md",
+      "theme": "crisis_signposting",
+      "primary_emotion": "urgent",
+      "tags": [],
+      "chunk_id": "crisis_signposting_4",
+      "critical": true
+    },
+    {
+      "text": "🧠 Prevención y Señales de Alarma en Salud Mental _Basado en mhGAP-OMS (versión 2.0)_ --- 📘 Introducción La salud mental es un componente esencial del bienestar general y un derecho humano básico",
+      "source_file": "risk\\when_to_seek_help.md",
+      "theme": "when_to_seek_help",
+      "primary_emotion": "concerned",
+      "tags": [],
+      "chunk_id": "when_to_seek_help_1",
+      "critical": true
+    },
+    {
+      "text": "El mhGAP de la OMS busca reducir la brecha de acceso a servicios, especialmente en lugares con escasos recursos y pocos especialistas ¿Por qué es importante la prevención",
+      "source_file": "risk\\when_to_seek_help.md",
+      "theme": "when_to_seek_help",
+      "primary_emotion": "concerned",
+      "tags": [],
+      "chunk_id": "when_to_seek_help_2",
+      "critical": true
+    },
+    {
+      "text": "Porque la detección temprana y la intervención oportuna pueden reducir sufrimiento, evitar complicaciones graves y mejorar el pronóstico ¿Qué significa “señal de alarma”",
+      "source_file": "risk\\when_to_seek_help.md",
+      "theme": "when_to_seek_help",
+      "primary_emotion": "concerned",
+      "tags": [],
+      "chunk_id": "when_to_seek_help_3",
+      "critical": true
+    },
+    {
+      "text": "Son cambios o conductas que indican que una persona podría estar desarrollando un problema de salud mental y que necesitan atención, apoyo o derivación",
+      "source_file": "risk\\when_to_seek_help.md",
+      "theme": "when_to_seek_help",
+      "primary_emotion": "concerned",
+      "tags": [],
+      "chunk_id": "when_to_seek_help_4",
+      "critical": true
+    },
+    {
+      "text": "--- 🌍 Principios Generales de Prevención Promoción del bienestar emocional - Fomentar hábitos saludables: sueño adecuado, alimentación balanceada, ejercicio físico regular - Estimular actividades recreativas y sociales como parte de la vida diaria",
+      "source_file": "risk\\when_to_seek_help.md",
+      "theme": "when_to_seek_help",
+      "primary_emotion": "concerned",
+      "tags": [],
+      "chunk_id": "when_to_seek_help_5",
+      "critical": true
+    },
+    {
+      "text": "- Crear ambientes familiares, laborales y escolares basados en respeto y apoyo Reducción del estigma - Hablar sobre salud mental de manera abierta y respetuosa - Prevenir la discriminación hacia quienes presentan dificultades emocionales",
+      "source_file": "risk\\when_to_seek_help.md",
+      "theme": "when_to_seek_help",
+      "primary_emotion": "concerned",
+      "tags": [],
+      "chunk_id": "when_to_seek_help_6",
+      "critical": true
+    },
+    {
+      "text": "- Promover mensajes educativos que refuercen que pedir ayuda no es debilidad Apoyo comunitario y familiar - Involucrar a la familia como parte activa del cuidado - Facilitar redes comunitarias de apoyo (escuela, servicios sociales, centros comunitarios)",
+      "source_file": "risk\\when_to_seek_help.md",
+      "theme": "when_to_seek_help",
+      "primary_emotion": "concerned",
+      "tags": [],
+      "chunk_id": "when_to_seek_help_7",
+      "critical": true
+    },
+    {
+      "text": "- Cuidar también a los cuidadores, que suelen estar en riesgo de agotamiento emocional --- 👀 Señales de Alarma Generales Cambios emocionales y de ánimo Tristeza, desesperanza, apatía o pérdida de interés en actividades habituales",
+      "source_file": "risk\\when_to_seek_help.md",
+      "theme": "when_to_seek_help",
+      "primary_emotion": "concerned",
+      "tags": [],
+      "chunk_id": "when_to_seek_help_8",
+      "critical": true
+    },
+    {
+      "text": "Irritabilidad marcada, estallidos de enojo o cambios de humor frecuentes Funcionamiento diario Descuidos en la presentación personal o higiene Bajo rendimiento escolar, universitario o laboral Dificultades para cumplir con responsabilidades básicas",
+      "source_file": "risk\\when_to_seek_help.md",
+      "theme": "when_to_seek_help",
+      "primary_emotion": "concerned",
+      "tags": [],
+      "chunk_id": "when_to_seek_help_9",
+      "critical": true
+    },
+    {
+      "text": "Conducta y relaciones Aislamiento social o retraimiento repentino Tendencia al conflicto o conductas agresivas Abandono de relaciones o actividades de grupo Aspectos físicos y del comportamiento Alteraciones del sueño (insomnio o exceso de sueño)",
+      "source_file": "risk\\when_to_seek_help.md",
+      "theme": "when_to_seek_help",
+      "primary_emotion": "concerned",
+      "tags": [],
+      "chunk_id": "when_to_seek_help_10",
+      "critical": true
+    },
+    {
+      "text": "Cambios notables en el apetito o peso Quejas físicas frecuentes sin causa médica clara (dolores, fatiga, malestar) Consumo problemático de alcohol o drogas Señales críticas ⚠️ Hablar de muerte o suicidio",
+      "source_file": "risk\\when_to_seek_help.md",
+      "theme": "when_to_seek_help",
+      "primary_emotion": "concerned",
+      "tags": [],
+      "chunk_id": "when_to_seek_help_11",
+      "critical": true
+    },
+    {
+      "text": "Conductas autolesivas o situaciones de riesgo físico Presencia de confusión, delirios, voces o imágenes inexistentes Pérdida de contacto con la realidad --- 🛑 Cuándo Derivar o Pedir Ayuda Especializada Cuando el malestar interfiere en la vida diaria (estudio, trabajo, familia)",
+      "source_file": "risk\\when_to_seek_help.md",
+      "theme": "when_to_seek_help",
+      "primary_emotion": "concerned",
+      "tags": [],
+      "chunk_id": "when_to_seek_help_12",
+      "critical": true
+    },
+    {
+      "text": "Si los síntomas persisten más de dos semanas o empeoran con el tiempo Ante cualquier riesgo de suicidio o autolesión Cuando hay violencia hacia otros o peligro en el entorno En niños/adolescentes si existen sospechas de abuso, maltrato o negligencia",
+      "source_file": "risk\\when_to_seek_help.md",
+      "theme": "when_to_seek_help",
+      "primary_emotion": "concerned",
+      "tags": [],
+      "chunk_id": "when_to_seek_help_13",
+      "critical": true
+    },
+    {
+      "text": "Cuando el/la cuidador/a se encuentra desbordado, deprimido o sobrecargado --- 👐 Estrategias de Acompañamiento y Prevención Escucha activa: mostrar interés real, no interrumpir Validación emocional: reconocer que lo que siente la persona es genuino",
+      "source_file": "risk\\when_to_seek_help.md",
+      "theme": "when_to_seek_help",
+      "primary_emotion": "concerned",
+      "tags": [],
+      "chunk_id": "when_to_seek_help_14",
+      "critical": true
+    },
+    {
+      "text": "Mensajes de apoyo: - “No estás solo/a.” - “Lo que te pasa tiene solución, hay formas de ayudarte.” Fomentar rutinas estructuradas: horarios de sueño, alimentación, ejercicio Promover actividades agradables: música, paseo, contacto con la naturaleza",
+      "source_file": "risk\\when_to_seek_help.md",
+      "theme": "when_to_seek_help",
+      "primary_emotion": "concerned",
+      "tags": [],
+      "chunk_id": "when_to_seek_help_15",
+      "critical": true
+    },
+    {
+      "text": "Contacto social: animar a mantener vínculos sanos con amigos y familia Orientar a recursos: líneas de ayuda, centros de atención primaria, servicios comunitarios --- 📌 Recomendaciones Clave para Proyectos de Prevención Difundir información clara y sencilla sobre salud mental",
+      "source_file": "risk\\when_to_seek_help.md",
+      "theme": "when_to_seek_help",
+      "primary_emotion": "concerned",
+      "tags": [],
+      "chunk_id": "when_to_seek_help_16",
+      "critical": true
+    },
+    {
+      "text": "Capacitar a referentes comunitarios (profesores, líderes, trabajadores sociales) para reconocer señales de alarma Crear materiales amigables (folletos, carteles, talleres) con mensajes accesibles Promover la detección temprana en escuelas y centros de salud Incluir estrategias de cuidado al cuidador",
+      "source_file": "risk\\when_to_seek_help.md",
+      "theme": "when_to_seek_help",
+      "primary_emotion": "concerned",
+      "tags": [],
+      "chunk_id": "when_to_seek_help_17",
+      "critical": true
+    },
+    {
+      "text": "--- ✅ Mensajes Finales La salud mental es parte inseparable de la salud integral Buscar ayuda es un acto de valentía y autocuidado La detección temprana salva vidas Con acompañamiento y apoyo, la recuperación y la mejora son posibles",
+      "source_file": "risk\\when_to_seek_help.md",
+      "theme": "when_to_seek_help",
+      "primary_emotion": "concerned",
+      "tags": [],
+      "chunk_id": "when_to_seek_help_18",
+      "critical": true
+    },
+    {
+      "text": "GAD-7 (Escala de Ansiedad Generalizada-7) Definición El GAD-7 es una herramienta de cribado breve y de dominio público utilizada para evaluar la presencia y severidad de los síntomas de ansiedad generalizada en las últimas dos semanas",
+      "source_file": "scales\\gad7.md",
+      "theme": "gad7",
+      "primary_emotion": "neutral",
+      "tags": [],
+      "chunk_id": "gad7_1",
+      "scale": true
+    },
+    {
+      "text": "No es una herramienta diagnóstica, sino un apoyo para la detección temprana, seguimiento y psicoeducación en salud mental Ítems de la escala En las últimas 2 semanas, ¿con qué frecuencia le han molestado los siguientes problemas Sentirse nervioso/a, ansioso/a o con los “nervios de punta”",
+      "source_file": "scales\\gad7.md",
+      "theme": "gad7",
+      "primary_emotion": "neutral",
+      "tags": [],
+      "chunk_id": "gad7_2",
+      "scale": true
+    },
+    {
+      "text": "No poder dejar de preocuparse o no poder controlar la preocupación Preocuparse demasiado por diferentes cosas Dificultad para relajarse Estar tan inquieto/a que le es difícil quedarse quieto/a",
+      "source_file": "scales\\gad7.md",
+      "theme": "gad7",
+      "primary_emotion": "neutral",
+      "tags": [],
+      "chunk_id": "gad7_3",
+      "scale": true
+    },
+    {
+      "text": "Molestarse o irritarse fácilmente Sentir miedo como si algo terrible pudiera pasar",
+      "source_file": "scales\\gad7.md",
+      "theme": "gad7",
+      "primary_emotion": "neutral",
+      "tags": [],
+      "chunk_id": "gad7_4",
+      "scale": true
+    },
+    {
+      "text": "Opciones de respuesta 0: Para nada 1: Varios días 2: Más de la mitad de los días 3: Casi todos los días Interpretación general de la puntuación (solo como referencia) 0-4: Ansiedad mínima 5-9: Ansiedad leve 10-14: Ansiedad moderada 15-21: Ansiedad grave Nota importante: Esta escala es una herramienta de cribado y no debe usarse para autodiagnóstico",
+      "source_file": "scales\\gad7.md",
+      "theme": "gad7",
+      "primary_emotion": "neutral",
+      "tags": [],
+      "chunk_id": "gad7_5",
+      "scale": true
+    },
+    {
+      "text": "La interpretación y el diagnóstico deben ser realizados siempre por un profesional de la salud mental Recursos adicionales GAD-7 (University of Washington - PDF oficial)",
+      "source_file": "scales\\gad7.md",
+      "theme": "gad7",
+      "primary_emotion": "neutral",
+      "tags": [],
+      "chunk_id": "gad7_6",
+      "scale": true
+    },
+    {
+      "text": "PHQ-9 (Cuestionario de Salud del Paciente-9) Definición El PHQ-9 es una herramienta de cribado breve y de dominio público utilizada para evaluar la presencia y severidad de los síntomas depresivos en las últimas dos semanas",
+      "source_file": "scales\\phq9.md",
+      "theme": "phq9",
+      "primary_emotion": "neutral",
+      "tags": [],
+      "chunk_id": "phq9_1",
+      "scale": true
+    },
+    {
+      "text": "No es una herramienta diagnóstica, sino un apoyo para la detección temprana, seguimiento y psicoeducación en salud mental Ítems de la escala En las últimas 2 semanas, ¿con qué frecuencia le han molestado los siguientes problemas Poco interés o placer en hacer las cosas",
+      "source_file": "scales\\phq9.md",
+      "theme": "phq9",
+      "primary_emotion": "neutral",
+      "tags": [],
+      "chunk_id": "phq9_2",
+      "scale": true
+    },
+    {
+      "text": "Sentirse decaído/a, deprimido/a o sin esperanza Dificultad para conciliar el sueño o permanecer dormido/a, o dormir demasiado Sentirse cansado/a o con poca energía Poco apetito o comer en exceso",
+      "source_file": "scales\\phq9.md",
+      "theme": "phq9",
+      "primary_emotion": "neutral",
+      "tags": [],
+      "chunk_id": "phq9_3",
+      "scale": true
+    },
+    {
+      "text": "Sentirse mal consigo mismo/a, o que es un fracaso, o que ha defraudado a su familia o a usted mismo/a Dificultad para concentrarse en cosas, como leer el periódico o ver la televisión Moverse o hablar tan lentamente que otras personas podrían haberlo notado",
+      "source_file": "scales\\phq9.md",
+      "theme": "phq9",
+      "primary_emotion": "neutral",
+      "tags": [],
+      "chunk_id": "phq9_4",
+      "scale": true
+    },
+    {
+      "text": "O lo contrario: estar tan inquieto/a o agitado/a que se ha movido mucho más de lo habitual Pensamientos de que estaría mejor muerto/a o de hacerse daño de alguna manera",
+      "source_file": "scales\\phq9.md",
+      "theme": "phq9",
+      "primary_emotion": "neutral",
+      "tags": [],
+      "chunk_id": "phq9_5",
+      "scale": true
+    },
+    {
+      "text": "Opciones de respuesta 0: Para nada 1: Varios días 2: Más de la mitad de los días 3: Casi todos los días Interpretación general de la puntuación (solo como referencia) 0-4: Depresión mínima 5-9: Depresión leve 10-14: Depresión moderada 15-19: Depresión moderadamente grave 20-27: Depresión grave Nota importante: Esta escala es una herramienta de cribado y no debe usarse para autodiagnóstico",
+      "source_file": "scales\\phq9.md",
+      "theme": "phq9",
+      "primary_emotion": "neutral",
+      "tags": [],
+      "chunk_id": "phq9_6",
+      "scale": true
+    },
+    {
+      "text": "La interpretación y el diagnóstico deben ser realizados siempre por un profesional de la salud mental Recursos adicionales PHQ-9 (University of Washington - PDF oficial)",
+      "source_file": "scales\\phq9.md",
+      "theme": "phq9",
+      "primary_emotion": "neutral",
+      "tags": [],
+      "chunk_id": "phq9_7",
+      "scale": true
+    },
+    {
+      "text": "Guía Integral de Actividad Física, Sedentarismo, Sueño y Salud Mental Plan de Acción Mundial sobre Actividad Física 2018–2030 (OMS) Visión Un mundo más activo y saludable, donde se reduzcan los niveles de inactividad física en todas las edades",
+      "source_file": "selfhelp\\exercise.md",
+      "theme": "exercise",
+      "primary_emotion": "energetic",
+      "tags": [],
+      "chunk_id": "exercise_1"
+    },
+    {
+      "text": "Objetivos Globales Reducir la inactividad física en adultos y adolescentes en 10% para 2025 Reducirla en 15% para 2030 (basado en niveles de 2010) Estrategias Principales Crear entornos activos: ciudades caminables, ciclovías, acceso a instalaciones recreativas",
+      "source_file": "selfhelp\\exercise.md",
+      "theme": "exercise",
+      "primary_emotion": "energetic",
+      "tags": [],
+      "chunk_id": "exercise_2"
+    },
+    {
+      "text": "Fortalecer sistemas de apoyo: programas en escuelas, lugares de trabajo y comunidades Promover la educación y la motivación: campañas y acciones de comunicación pública Mejorar la gobernanza y monitoreo: políticas nacionales activas, alianzas intersectoriales",
+      "source_file": "selfhelp\\exercise.md",
+      "theme": "exercise",
+      "primary_emotion": "energetic",
+      "tags": [],
+      "chunk_id": "exercise_3"
+    },
+    {
+      "text": "--- Guías de Actividad Física y Comportamiento Sedentario (2020) Recomendaciones por Grupo Etario Niños/adolescentes (5–17 años): ≥ 60 min diarios moderado-vigoroso Limitar pantallas Adultos (18–64 años): 150–300 min semanales moderados o 75–150 min vigorosos",
+      "source_file": "selfhelp\\exercise.md",
+      "theme": "exercise",
+      "primary_emotion": "energetic",
+      "tags": [],
+      "chunk_id": "exercise_4"
+    },
+    {
+      "text": "Adultos mayores (65+): igual que adultos, incluir fuerza y equilibrio Embarazadas/posparto: actividad adaptada, beneficios en parto y salud mental Personas con enfermedades crónicas/discapacidad: mismas recomendaciones, adaptadas a sus capacidades",
+      "source_file": "selfhelp\\exercise.md",
+      "theme": "exercise",
+      "primary_emotion": "energetic",
+      "tags": [],
+      "chunk_id": "exercise_5"
+    },
+    {
+      "text": "--- Guías sobre Actividad Física, Sedentarismo y Sueño en menores de 5 años (2019) 0–1 año: actividades interactivas; sueño 12–17 h según edad 1–2 años: ≥ 180 min actividad variada; pantallas <1 h; sueño 11–14 h 3–4 años: ≥ 180 min diarios (60 min vigorosos); pantallas ≤1 h; sueño 10–13 h",
+      "source_file": "selfhelp\\exercise.md",
+      "theme": "exercise",
+      "primary_emotion": "energetic",
+      "tags": [],
+      "chunk_id": "exercise_6"
+    },
+    {
+      "text": "--- Ejercicio y Actividad Física: Enfoque Práctico Concepto La actividad física incluye todo movimiento con gasto energético: transporte activo, juego, tareas domésticas, trabajo o deporte Datos Clave 31% de adultos y 80% de adolescentes no cumplen las recomendaciones",
+      "source_file": "selfhelp\\exercise.md",
+      "theme": "exercise",
+      "primary_emotion": "energetic",
+      "tags": [],
+      "chunk_id": "exercise_7"
+    },
+    {
+      "text": "La inactividad costará 300 mil millones USD en salud pública (2020–2030) Beneficios Generales Niños/adolescentes: mejor salud ósea, cognitiva y metabólica Adultos: menor mortalidad y riesgo de diabetes tipo 2, cáncer y enfermedades cardiovasculares",
+      "source_file": "selfhelp\\exercise.md",
+      "theme": "exercise",
+      "primary_emotion": "energetic",
+      "tags": [],
+      "chunk_id": "exercise_8"
+    },
+    {
+      "text": "Embarazadas/posparto: menor riesgo de complicaciones y mejor salud mental Riesgos de Inactividad +20–30% riesgo de muerte prematura Asociado a obesidad, cáncer, diabetes tipo 2 y peor sueño",
+      "source_file": "selfhelp\\exercise.md",
+      "theme": "exercise",
+      "primary_emotion": "energetic",
+      "tags": [],
+      "chunk_id": "exercise_9"
+    },
+    {
+      "text": "--- Ejercicio y Salud Mental Antidepresivo natural El ejercicio regular es igual de efectivo que algunos tratamientos farmacológicos en casos leves a moderados de depresión Regula neurotransmisores como serotonina, dopamina y endorfinas Mejora autoestima, motivación y concentración",
+      "source_file": "selfhelp\\exercise.md",
+      "theme": "exercise",
+      "primary_emotion": "energetic",
+      "tags": [],
+      "chunk_id": "exercise_10"
+    },
+    {
+      "text": "Favorece el contacto social (grupos, clubes, actividades) El ciclo de la depresión La depresión combina pensamientos, emociones, sensaciones físicas y conductas en un ciclo vicioso: Pensamientos negativos → “no valgo nada, no puedo” Emociones negativas → tristeza, ansiedad, culpa",
+      "source_file": "selfhelp\\exercise.md",
+      "theme": "exercise",
+      "primary_emotion": "energetic",
+      "tags": [],
+      "chunk_id": "exercise_11"
+    },
+    {
+      "text": "Síntomas físicos → fatiga, insomnio, pérdida de apetito Conductas ↓ → evitar salir, dejar hobbies, aislarse Esto reduce aún más el ánimo ⬇ El ejercicio ayuda a romper el ciclo al introducir actividad planificada, refuerzos positivos y placer a través del movimiento",
+      "source_file": "selfhelp\\exercise.md",
+      "theme": "exercise",
+      "primary_emotion": "energetic",
+      "tags": [],
+      "chunk_id": "exercise_12"
+    },
+    {
+      "text": "Recomendaciones específicas Adultos en depresión leve/moderada: ≥ 150 min semanales moderados Actividad placentera: elige algo disfrutable (caminar, nadar, bailar, yoga) Progresión lenta: empezar con pasos pequeños, crecer semana a semana Mejor en compañía: apuntarse a un grupo aumenta la motivación",
+      "source_file": "selfhelp\\exercise.md",
+      "theme": "exercise",
+      "primary_emotion": "energetic",
+      "tags": [],
+      "chunk_id": "exercise_13"
+    },
+    {
+      "text": "--- Tipos e Intensidad de Ejercicio Actividad ligera Movimiento suave, no da sensación de esfuerzo Ejemplos: caminar despacio, tareas del hogar, levantarse con frecuencia Actividad moderada Aumenta la respiración y ritmo cardíaco; puedes hablar, no cantar",
+      "source_file": "selfhelp\\exercise.md",
+      "theme": "exercise",
+      "primary_emotion": "energetic",
+      "tags": [],
+      "chunk_id": "exercise_14"
+    },
+    {
+      "text": "Ejemplos: caminar rápido, bicicleta en terreno llano, baile, senderismo suave, cortar césped Actividad vigorosa Respiras fuerte y rápido, hablar cuesta Ejemplos: correr, natación, deportes intensos (fútbol, hockey), ciclismo en pendientes, artes marciales, baile intenso",
+      "source_file": "selfhelp\\exercise.md",
+      "theme": "exercise",
+      "primary_emotion": "energetic",
+      "tags": [],
+      "chunk_id": "exercise_15"
+    },
+    {
+      "text": "--- Ejercicio de Fuerza y Equilibrio Al menos 2 veces por semana, además del aeróbico Fuerza: pesas, bandas elásticas, flexiones, cargar bolsas, jardinería pesada Equilibrio y flexibilidad: yoga, pilates, tai chi, ejercicios de balance",
+      "source_file": "selfhelp\\exercise.md",
+      "theme": "exercise",
+      "primary_emotion": "energetic",
+      "tags": [],
+      "chunk_id": "exercise_16"
+    },
+    {
+      "text": "Madres posparto: reinicio progresivo después de los 6–8 semanas, siempre adaptado --- Consejos Prácticos Encuentra una actividad que te guste → la adherencia es clave Planifica rutinas regulares, mejor a la misma hora Divide en objetivos diarios/pequeños pasos",
+      "source_file": "selfhelp\\exercise.md",
+      "theme": "exercise",
+      "primary_emotion": "energetic",
+      "tags": [],
+      "chunk_id": "exercise_17"
+    },
+    {
+      "text": "Evita el sedentarismo prolongado: levántate cada 1–2 h Usa el ejercicio como herramienta de autorregulación emocional: caminar cuando la ansiedad sube, entrenamiento ligero para liberar tensión",
+      "source_file": "selfhelp\\exercise.md",
+      "theme": "exercise",
+      "primary_emotion": "energetic",
+      "tags": [],
+      "chunk_id": "exercise_18"
+    },
+    {
+      "text": "--- Conclusión General La actividad física es una de las intervenciones más efectivas, accesibles y de bajo costo para mejorar la salud física y mental Puede prevenir la depresión, reducir el estrés, aumentar la resiliencia y actuar como un tratamiento complementario en salud mental",
+      "source_file": "selfhelp\\exercise.md",
+      "theme": "exercise",
+      "primary_emotion": "energetic",
+      "tags": [],
+      "chunk_id": "exercise_19"
+    },
+    {
+      "text": "➡ Cada paso cuenta Incluso 10 minutos de movimiento pueden marcar la diferencia Haz de la actividad física tu aliado diario para el cuerpo y la mente.",
+      "source_file": "selfhelp\\exercise.md",
+      "theme": "exercise",
+      "primary_emotion": "energetic",
+      "tags": [],
+      "chunk_id": "exercise_20"
+    },
+    {
+      "text": "Journaling (Escritura Terapéutica) Definición El journaling es la práctica de escribir de forma regular sobre nuestros pensamientos, emociones, experiencias y preocupaciones Es una herramienta de autocuidado y autoexploración que ayuda a organizar ideas, procesar emociones y ganar perspectiva",
+      "source_file": "selfhelp\\journaling.md",
+      "theme": "journaling",
+      "primary_emotion": "reflective",
+      "tags": [],
+      "chunk_id": "journaling_1"
+    },
+    {
+      "text": "Puede usarse de manera personal, como hábito de bienestar, o como recurso terapéutico complementario en procesos de ansiedad, depresión, trauma o crecimiento personal --- Beneficios del journaling Disminuye rumiación y ansiedad al “sacar” pensamientos de la mente",
+      "source_file": "selfhelp\\journaling.md",
+      "theme": "journaling",
+      "primary_emotion": "reflective",
+      "tags": [],
+      "chunk_id": "journaling_2"
+    },
+    {
+      "text": "Permite gestionar estrés, ansiedad y depresión Favorece la autoconciencia y el reconocimiento de patrones emocionales Ayuda a priorizar problemas y miedos y a identificar desencadenantes Proporciona un espacio seguro para el auto-diálogo positivo y cuestionar pensamientos automáticos negativos",
+      "source_file": "selfhelp\\journaling.md",
+      "theme": "journaling",
+      "primary_emotion": "reflective",
+      "tags": [],
+      "chunk_id": "journaling_3"
+    },
+    {
+      "text": "Refuerza la gratitud y el optimismo Aumenta la sensación de control en etapas de incertidumbre Puede mejorar la salud física (menor presión arterial, mejor inmunidad, función hepática y pulmonar)",
+      "source_file": "selfhelp\\journaling.md",
+      "theme": "journaling",
+      "primary_emotion": "reflective",
+      "tags": [],
+      "chunk_id": "journaling_4"
+    },
+    {
+      "text": "Estudios reportan mejoras en bienestar psicológico, menor absentismo laboral y mejor rendimiento académico --- Evidencia científica La escritura expresiva ayuda a procesar traumas emocionales y favorece la aceptación (Baikie & Wilhelm, 2005)",
+      "source_file": "selfhelp\\journaling.md",
+      "theme": "journaling",
+      "primary_emotion": "reflective",
+      "tags": [],
+      "chunk_id": "journaling_5"
+    },
+    {
+      "text": "Beneficios observados: - Reducción de síntomas depresivos y de evitación - Menor número de visitas médicas por estrés - Mejor recuperación en PTSD y adicciones El journaling de gratitud aumenta sentimientos positivos y fortalece relaciones (Fredrickson, 2010)",
+      "source_file": "selfhelp\\journaling.md",
+      "theme": "journaling",
+      "primary_emotion": "reflective",
+      "tags": [],
+      "chunk_id": "journaling_6"
+    },
+    {
+      "text": "Es más efectivo en intervenciones >30 días y parece tener mayor impacto en mujeres para ansiedad (Sohal et al., 2022) Estudios neurocientíficos (Lieberman, UCLA): escribir reduce la actividad de la amígdala, regulando la intensidad emocional",
+      "source_file": "selfhelp\\journaling.md",
+      "theme": "journaling",
+      "primary_emotion": "reflective",
+      "tags": [],
+      "chunk_id": "journaling_7"
+    },
+    {
+      "text": "--- Tipos de journaling Diario libre: escribir libremente lo que se piensa o se siente Diario de gratitud: registrar a diario o varias veces por semana las cosas por las que sentirse agradecido Registro de preocupaciones: escribir lo que preocupa y diseñar un plan de acción",
+      "source_file": "selfhelp\\journaling.md",
+      "theme": "journaling",
+      "primary_emotion": "reflective",
+      "tags": [],
+      "chunk_id": "journaling_8"
+    },
+    {
+      "text": "Journaling estructurado: usar plantillas con preguntas fijas (ej ¿qué aprendí hoy?) Escritura expresiva: 3-4 sesiones para explorar emociones profundas ligadas a sucesos importantes Cartas no enviadas: expresar en escrito lo que no se puede comunicar en persona, como vía de liberación y cierre",
+      "source_file": "selfhelp\\journaling.md",
+      "theme": "journaling",
+      "primary_emotion": "reflective",
+      "tags": [],
+      "chunk_id": "journaling_9"
+    },
+    {
+      "text": "Brain dump / “volcado de mente”: escribir sin estructura todo lo que ocupa la cabeza para ganar claridad Narrativa alternativa: escribir cómo nos gustaría que fuera una situación futura o cómo nos veríamos actuando con mayor fortaleza",
+      "source_file": "selfhelp\\journaling.md",
+      "theme": "journaling",
+      "primary_emotion": "reflective",
+      "tags": [],
+      "chunk_id": "journaling_10"
+    },
+    {
+      "text": "Diagramas/listas: organizar pensamientos y problemas en papel para ganar foco --- Estrategias prácticas para comenzar Escoge un cuaderno exclusivo o una app Escribe entre 5–20 minutos al menos 3–4 veces por semana No busques “escribir bien”: céntrate en expresar y explorar",
+      "source_file": "selfhelp\\journaling.md",
+      "theme": "journaling",
+      "primary_emotion": "reflective",
+      "tags": [],
+      "chunk_id": "journaling_11"
+    },
+    {
+      "text": "Puedes hacerlo a mano (más recomendado) o en digital Establece un lugar tranquilo y relajante, con un ritual que te invite a escribir (ej té, música suave) Revisa lo escrito semanalmente para identificar patrones y progresos",
+      "source_file": "selfhelp\\journaling.md",
+      "theme": "journaling",
+      "primary_emotion": "reflective",
+      "tags": [],
+      "chunk_id": "journaling_12"
+    },
+    {
+      "text": "Acepta que escribir emociones difíciles puede remover malestar al inicio, pero genera beneficios a largo plazo No compartas tu diario salvo que quieras: es un espacio íntimo y privado --- Ejemplos de ejercicios y prompts Ejercicio breve Escribe 3 cosas que agradeces hoy",
+      "source_file": "selfhelp\\journaling.md",
+      "theme": "journaling",
+      "primary_emotion": "reflective",
+      "tags": [],
+      "chunk_id": "journaling_13"
+    },
+    {
+      "text": "Nombra una situación que te preocupa Identifica qué parte de la situación puedes controlar Define una acción concreta para mañana Prompts sugeridos ¿Qué cambios recientes en tu vida te generan más emociones",
+      "source_file": "selfhelp\\journaling.md",
+      "theme": "journaling",
+      "primary_emotion": "reflective",
+      "tags": [],
+      "chunk_id": "journaling_14"
+    },
+    {
+      "text": "¿Qué es lo que más te genera ansiedad actualmente Describe un recuerdo positivo que quieras revivir ¿Cómo sería tu “mejor día posible” Escríbelo con detalle",
+      "source_file": "selfhelp\\journaling.md",
+      "theme": "journaling",
+      "primary_emotion": "reflective",
+      "tags": [],
+      "chunk_id": "journaling_15"
+    },
+    {
+      "text": "¿Qué aprendiste hoy de ti mismo ¿Qué necesitas soltar para avanzar --- Journaling y salud mental Ansiedad: ayuda a aceptar emociones negativas y responder mejor al estrés Depresión: la escritura expresiva y la gratitud reducen síntomas",
+      "source_file": "selfhelp\\journaling.md",
+      "theme": "journaling",
+      "primary_emotion": "reflective",
+      "tags": [],
+      "chunk_id": "journaling_16"
+    },
+    {
+      "text": "Estrés: escribir sobre eventos estresantes disminuye la carga emocional y previene burnout Trauma/PTSD: facilita procesar recuerdos dolorosos y fomenta resiliencia Adicciones: estudios muestran mejoras en recuperación y refuerzo de hábitos positivos",
+      "source_file": "selfhelp\\journaling.md",
+      "theme": "journaling",
+      "primary_emotion": "reflective",
+      "tags": [],
+      "chunk_id": "journaling_17"
+    },
+    {
+      "text": "--- Consejos clave Reconoce que cada escrito es válido: lo importante es la expresión, no la estética Si algún ejercicio resulta demasiado perturbador, detente y busca apoyo Usa el journaling junto con otros hábitos saludables: descanso, ejercicio, alimentación balanceada y relajación",
+      "source_file": "selfhelp\\journaling.md",
+      "theme": "journaling",
+      "primary_emotion": "reflective",
+      "tags": [],
+      "chunk_id": "journaling_18"
+    },
+    {
+      "text": "Recuerda que el journaling es un complemento, no sustituye tratamiento clínico --- Conclusión El journaling es una herramienta sencilla, accesible y con un alto respaldo en investigación para mejorar salud emocional, mental y física",
+      "source_file": "selfhelp\\journaling.md",
+      "theme": "journaling",
+      "primary_emotion": "reflective",
+      "tags": [],
+      "chunk_id": "journaling_19"
+    },
+    {
+      "text": "Permite hacer “lo implícito explícito”: llevar lo confuso y difuso de la mente al papel, ordenándolo y transformándolo en claridad y acción --- Nota El journaling es una herramienta de apoyo, no un sustituto de la atención clínica",
+      "source_file": "selfhelp\\journaling.md",
+      "theme": "journaling",
+      "primary_emotion": "reflective",
+      "tags": [],
+      "chunk_id": "journaling_20"
+    },
+    {
+      "text": "Si los pensamientos escritos revelan ideación suicida o autodestructiva, buscar ayuda profesional inmediata.",
+      "source_file": "selfhelp\\journaling.md",
+      "theme": "journaling",
+      "primary_emotion": "reflective",
+      "tags": [],
+      "chunk_id": "journaling_21"
+    },
+    {
+      "text": "Estilo de Vida y Bienestar Ejercicio Mejora el estado de ánimo, el sueño y reduce ansiedad No hace falta gimnasio: caminar, bailar, deportes, artes marciales Se recomienda actividad física ligera a moderada diaria Nutrición Evitar exceso de cafeína, alcohol o comidas copiosas antes de dormir",
+      "source_file": "selfhelp\\lifestyle.md",
+      "theme": "lifestyle",
+      "primary_emotion": "neutral",
+      "tags": [],
+      "chunk_id": "lifestyle_1"
+    },
+    {
+      "text": "Mantener una dieta rica en frutas, verduras y proteínas balanceadas Hidratación adecuada Rutinas saludables Mantener horarios regulares Preparar un ambiente de descanso",
+      "source_file": "selfhelp\\lifestyle.md",
+      "theme": "lifestyle",
+      "primary_emotion": "neutral",
+      "tags": [],
+      "chunk_id": "lifestyle_2"
+    },
+    {
+      "text": "Tener momentos de ocio sin pantallas Actividades relajantes: lectura, música, paseos Beneficios esperados Mayor energía en el día a día Regulación del estado anímico Prevención de problemas de sueño y ansiedad",
+      "source_file": "selfhelp\\lifestyle.md",
+      "theme": "lifestyle",
+      "primary_emotion": "neutral",
+      "tags": [],
+      "chunk_id": "lifestyle_3"
+    },
+    {
+      "text": "Relajación y Técnicas de Respiración La relajación no es solo paz mental o descanso: es un proceso activo que ayuda a reducir los efectos del estrés en mente y cuerpo Puede practicarse en cualquier lugar, no requiere grandes recursos y con constancia produce beneficios para la salud física y mental",
+      "source_file": "selfhelp\\relaxation.md",
+      "theme": "relaxation",
+      "primary_emotion": "calm",
+      "tags": [],
+      "chunk_id": "relaxation_1"
+    },
+    {
+      "text": "--- Beneficios de las técnicas de relajación Disminución de la ansiedad y el estrés Mejora de la calidad del sueño Reducción de la tensión muscular y del dolor crónico Disminución de frecuencia cardíaca, presión arterial y ritmo respiratorio",
+      "source_file": "selfhelp\\relaxation.md",
+      "theme": "relaxation",
+      "primary_emotion": "calm",
+      "tags": [],
+      "chunk_id": "relaxation_2"
+    },
+    {
+      "text": "Mejor digestión y control de la glucosa Menor actividad de hormonas del estrés Mayor flujo sanguíneo a músculos principales Incremento de la concentración, el estado de ánimo y la autoconfianza",
+      "source_file": "selfhelp\\relaxation.md",
+      "theme": "relaxation",
+      "primary_emotion": "calm",
+      "tags": [],
+      "chunk_id": "relaxation_3"
+    },
+    {
+      "text": "Menor fatiga, frustración e ira Apoyo en el manejo de enfermedades cardíacas, dolor persistente y problemas de salud mental --- Estrategias Complementarias Para maximizar los beneficios, combina la relajación con: Pensamiento positivo y humor Resolución realista de problemas",
+      "source_file": "selfhelp\\relaxation.md",
+      "theme": "relaxation",
+      "primary_emotion": "calm",
+      "tags": [],
+      "chunk_id": "relaxation_4"
+    },
+    {
+      "text": "Actividad física regular Alimentación saludable Descanso suficiente Contacto con la naturaleza",
+      "source_file": "selfhelp\\relaxation.md",
+      "theme": "relaxation",
+      "primary_emotion": "calm",
+      "tags": [],
+      "chunk_id": "relaxation_5"
+    },
+    {
+      "text": "Apoyo de familiares y amigos --- Técnicas específicas de relajación Relajación muscular progresiva Contrae suavemente un grupo muscular (pies, piernas, abdomen, hombros, cara) Mantén 5 segundos Suelta durante 30 segundos y percibe la diferencia",
+      "source_file": "selfhelp\\relaxation.md",
+      "theme": "relaxation",
+      "primary_emotion": "calm",
+      "tags": [],
+      "chunk_id": "relaxation_6"
+    },
+    {
+      "text": "Recorre progresivamente todo el cuerpo --- Respiración consciente (Mindful Breathing) Siéntate en posición cómoda Enfoca tu atención en la respiración natural Si aparecen pensamientos, reconócelos y regresa a la inhalación/exhalación",
+      "source_file": "selfhelp\\relaxation.md",
+      "theme": "relaxation",
+      "primary_emotion": "calm",
+      "tags": [],
+      "chunk_id": "relaxation_7"
+    },
+    {
+      "text": "Practica unos minutos diarios --- Ejercicio de respiración calmante para el estrés, ansiedad y pánico Técnica breve (5 min) que puedes hacer de pie, sentado o tumbado Ponte cómodo, con la espalda apoyada y pies planos, separados a la anchura de las caderas",
+      "source_file": "selfhelp\\relaxation.md",
+      "theme": "relaxation",
+      "primary_emotion": "calm",
+      "tags": [],
+      "chunk_id": "relaxation_8"
+    },
+    {
+      "text": "Afloja ropa ajustada que limite la respiración Si estás tumbado, coloca brazos un poco separados del torso, palmas hacia arriba; piernas estiradas o rodillas dobladas Deja que el aire llegue suavemente al abdomen, sin forzar",
+      "source_file": "selfhelp\\relaxation.md",
+      "theme": "relaxation",
+      "primary_emotion": "calm",
+      "tags": [],
+      "chunk_id": "relaxation_9"
+    },
+    {
+      "text": "Inhala por la nariz contando mentalmente 1–5 (o hasta donde llegues al inicio) Exhala por la boca suavemente, contando 1–5 Repite de forma continua durante al menos 5 minutos 👉 Practicarlo a diario lo hace mucho más efectivo para calmar crisis de ansiedad o momentos de tensión",
+      "source_file": "selfhelp\\relaxation.md",
+      "theme": "relaxation",
+      "primary_emotion": "calm",
+      "tags": [],
+      "chunk_id": "relaxation_10"
+    },
+    {
+      "text": "--- Autogenic Relaxation Usa frases o imágenes autosugestivas (ej “mi brazo está cálido y pesado”) Combínalo con respiración lenta --- Visualización (Imaginación guiada) Cierra los ojos e imagina un lugar relajante",
+      "source_file": "selfhelp\\relaxation.md",
+      "theme": "relaxation",
+      "primary_emotion": "calm",
+      "tags": [],
+      "chunk_id": "relaxation_11"
+    },
+    {
+      "text": "Utiliza todos los sentidos: sonidos, olores, texturas Combínalo con respiración profunda --- Otras técnicas útiles Meditación y mindfulness Yoga o tai chi (movimiento + respiración)",
+      "source_file": "selfhelp\\relaxation.md",
+      "theme": "relaxation",
+      "primary_emotion": "calm",
+      "tags": [],
+      "chunk_id": "relaxation_12"
+    },
+    {
+      "text": "Masaje terapéutico Biofeedback Aromaterapia, musicoterapia, hidroterapia, arte terapia --- Práctica y Constancia La relajación es una habilidad: mejora con la práctica",
+      "source_file": "selfhelp\\relaxation.md",
+      "theme": "relaxation",
+      "primary_emotion": "calm",
+      "tags": [],
+      "chunk_id": "relaxation_13"
+    },
+    {
+      "text": "Es normal sentir incomodidad emocional al inicio, sobre todo si hay antecedentes de trauma Si ocurre malestar, detente y consulta con un profesional Cada persona responde distinto: prueba diferentes técnicas hasta encontrar tu favorita",
+      "source_file": "selfhelp\\relaxation.md",
+      "theme": "relaxation",
+      "primary_emotion": "calm",
+      "tags": [],
+      "chunk_id": "relaxation_14"
+    },
+    {
+      "text": "--- Resumen La respiración y la relajación son herramientas simples pero poderosas para: Reducir el estrés Mejorar la calidad de vida Favorecer la resiliencia mental y la recuperación física",
+      "source_file": "selfhelp\\relaxation.md",
+      "theme": "relaxation",
+      "primary_emotion": "calm",
+      "tags": [],
+      "chunk_id": "relaxation_15"
+    },
+    {
+      "text": "Incluso 5 minutos al día de respiración calmante o cualquier práctica de relajación aportan beneficios inmediatos y acumulativos.",
+      "source_file": "selfhelp\\relaxation.md",
+      "theme": "relaxation",
+      "primary_emotion": "calm",
+      "tags": [],
+      "chunk_id": "relaxation_16"
+    },
+    {
+      "text": "Sueño e Insomnio Importancia del sueño Dormir bien es esencial para reparar cuerpo y mente El sueño ayuda a regular el estado de ánimo, la concentración y la salud física Insomnio El insomnio puede ser corto plazo (menos de 3 meses) o crónico (más de 3 meses)",
+      "source_file": "selfhelp\\sleep.md",
+      "theme": "sleep",
+      "primary_emotion": "restful",
+      "tags": [],
+      "chunk_id": "sleep_1"
+    },
+    {
+      "text": "Síntomas frecuentes: Dificultad para conciliar el sueño Despertares nocturnos o demasiado temprano Fatiga diurna, irritabilidad, dificultad de concentración Imposibilidad de dormir siestas aunque haya cansancio Causas comunes Estrés, ansiedad, depresión Entorno inadecuado (ruido, calor, cama incómoda) Estimulantes: cafeína, nicotina, alcohol, drogas Turnos de trabajo o jet lag Enfermedades y dolor crónico Higiene del sueño Haz: Acostarse y levantarse siempre a la misma hora Rutina relajante antes de dormir Dormitorio oscuro, fresco y tranquilo Ejercicio regular durante el día Buena base: colchón, almohadas, ropa de cama cómoda Evita: Cafeína, alcohol, nicotina en las 6h previas Pantallas justo antes de dormir Ejercicio intenso antes de dormir Siestas largas o tardías Dormir en exceso tras una mala noche Tratamiento Cambios de hábitos y CBT-i (terapia cognitivo-conductual para insomnio) Evitar uso prolongado de pastillas para dormir (riesgo de dependencia) Acudir a médico si dura meses o afecta la vida diaria",
+      "source_file": "selfhelp\\sleep.md",
+      "theme": "sleep",
+      "primary_emotion": "restful",
+      "tags": [],
+      "chunk_id": "sleep_2"
+    },
+    {
+      "text": "Acceptance and Commitment Therapy (ACT) Introducción La Terapia de Aceptación y Compromiso (ACT) es una forma contemporánea de terapia conductual orientada a los valores",
+      "source_file": "therapies\\act.md",
+      "theme": "act",
+      "primary_emotion": "accepting",
+      "tags": [],
+      "chunk_id": "act_1"
+    },
+    {
+      "text": "Su objetivo no es eliminar pensamientos o emociones dolorosas, sino fomentar la flexibilidad psicológica: la capacidad de contactar con el presente plenamente y actuar en dirección a los valores personales, incluso en presencia de experiencias internas difíciles",
+      "source_file": "therapies\\act.md",
+      "theme": "act",
+      "primary_emotion": "accepting",
+      "tags": [],
+      "chunk_id": "act_2"
+    },
+    {
+      "text": "ACT se enmarca en la “tercera ola” de terapias conductuales, derivada de la Teoría de los Marcos Relacionales (RFT) y del Contextualismo Funcional --- Fundamentos Teóricos Evitación experiencial (EE): núcleo conceptual de ACT",
+      "source_file": "therapies\\act.md",
+      "theme": "act",
+      "primary_emotion": "accepting",
+      "tags": [],
+      "chunk_id": "act_3"
+    },
+    {
+      "text": "Se refiere a los intentos rígidos de evitar, controlar o escapar de pensamientos, recuerdos, sensaciones y emociones dolorosas Aunque brindan alivio inmediato, a largo plazo restringen la vida significativa",
+      "source_file": "therapies\\act.md",
+      "theme": "act",
+      "primary_emotion": "accepting",
+      "tags": [],
+      "chunk_id": "act_4"
+    },
+    {
+      "text": "RFT: explica cómo el lenguaje y la cognición humana generan sufrimiento al dotar de funciones aversivas a pensamientos y recuerdos (ej “voy a morir” adquiere el mismo poder que la experiencia real de morir)",
+      "source_file": "therapies\\act.md",
+      "theme": "act",
+      "primary_emotion": "accepting",
+      "tags": [],
+      "chunk_id": "act_5"
+    },
+    {
+      "text": "--- Procesos Básicos (Hexaflex) Los seis procesos centrales de ACT se organizan en el hexaflex, que promueve flexibilidad psicológica: Contacto con el momento presente → atención plena y observación del aquí‑y‑ahora",
+      "source_file": "therapies\\act.md",
+      "theme": "act",
+      "primary_emotion": "accepting",
+      "tags": [],
+      "chunk_id": "act_6"
+    },
+    {
+      "text": "Aceptación → disposición a experimentar pensamientos/sensaciones en lugar de evitarlos Defusión cognitiva → tomar distancia de los pensamientos, verlos como “palabras e imágenes” y no como verdades literales",
+      "source_file": "therapies\\act.md",
+      "theme": "act",
+      "primary_emotion": "accepting",
+      "tags": [],
+      "chunk_id": "act_7"
+    },
+    {
+      "text": "Yo‑como‑contexto (self‑as‑contexto) → cultivar una perspectiva desde la cual observar experiencias sin fusionarse con ellas Valores → clarificación de lo que realmente importa en la vida del paciente Acción comprometida → realización de conductas alineadas con los valores pese a emociones negativas",
+      "source_file": "therapies\\act.md",
+      "theme": "act",
+      "primary_emotion": "accepting",
+      "tags": [],
+      "chunk_id": "act_8"
+    },
+    {
+      "text": "--- Metáforas y Herramientas Comunes Las manos frente a la cara → ilustrar la fusión con pensamientos Pasajeros en el autobús → avanzar hacia valores aunque “pasajeros” (pensamientos/ansiedades) estén presentes",
+      "source_file": "therapies\\act.md",
+      "theme": "act",
+      "primary_emotion": "accepting",
+      "tags": [],
+      "chunk_id": "act_9"
+    },
+    {
+      "text": "Tablero de ajedrez → diferenciar entre el observador (tablero) y las piezas (pensamientos, emociones) Ejercicios de mindfulness → respiración, anclaje en los sentidos, observación no‑juiciosa",
+      "source_file": "therapies\\act.md",
+      "theme": "act",
+      "primary_emotion": "accepting",
+      "tags": [],
+      "chunk_id": "act_10"
+    },
+    {
+      "text": "--- Aplicaciones Clínicas Generales ACT ha mostrado eficacia para: Trastornos de ansiedad (generalizada, social, pánico) Trastorno depresivo mayor Estrés postraumático (PTSD) Dolor crónico y condiciones médicas",
+      "source_file": "therapies\\act.md",
+      "theme": "act",
+      "primary_emotion": "accepting",
+      "tags": [],
+      "chunk_id": "act_11"
+    },
+    {
+      "text": "Uso de sustancias y adicciones Trastornos de la personalidad y problemas de regulación emocional --- ACT y Trastorno de Pánico El trastorno de pánico puede entenderse como un caso paradigmático de evitación experiencial",
+      "source_file": "therapies\\act.md",
+      "theme": "act",
+      "primary_emotion": "accepting",
+      "tags": [],
+      "chunk_id": "act_12"
+    },
+    {
+      "text": "Patrón FEAR (Fusion, Evaluation, Avoidance, Reasons): el paciente se fusiona con el pensamiento “voy a morir”, evalúa síntomas como catastróficos, evita salir o tener sensaciones físicas y lo justifica mediante razones",
+      "source_file": "therapies\\act.md",
+      "theme": "act",
+      "primary_emotion": "accepting",
+      "tags": [],
+      "chunk_id": "act_13"
+    },
+    {
+      "text": "ACT propone el patrón ACT (Accept, Choose, Take action): aceptar síntomas, elegir según valores, actuar pese al miedo Técnicas aplicadas: Clarificación de valores personales para motivar exposición Exposición funcional orientada a valores, no a reducción de síntomas",
+      "source_file": "therapies\\act.md",
+      "theme": "act",
+      "primary_emotion": "accepting",
+      "tags": [],
+      "chunk_id": "act_14"
+    },
+    {
+      "text": "Defusión y mindfulness para reducir credibilidad y control de pensamientos Reforzamiento de acciones comprometidas pese a ansiedad --- Evidencia Empírica Estudios en laboratorio (ej",
+      "source_file": "therapies\\act.md",
+      "theme": "act",
+      "primary_emotion": "accepting",
+      "tags": [],
+      "chunk_id": "act_15"
+    },
+    {
+      "text": "inhalación de CO₂) muestran que protocolos de aceptación aumentan la disposición a exponerse comparado con supresión o control",
+      "source_file": "therapies\\act.md",
+      "theme": "act",
+      "primary_emotion": "accepting",
+      "tags": [],
+      "chunk_id": "act_16"
+    },
+    {
+      "text": "Ensayos clínicos pequeños y series de casos evidencian eficacia comparable a Terapia Cognitivo Conductual (TCC), con ventajas en reducción de “credibilidad de pensamientos negativos” en seguimientos",
+      "source_file": "therapies\\act.md",
+      "theme": "act",
+      "primary_emotion": "accepting",
+      "tags": [],
+      "chunk_id": "act_17"
+    },
+    {
+      "text": "Aplicación prometedora en ansiedad generalizada, fobias, TOC y pánico, aunque todavía con menor solidez empírica que TCC --- Líneas Futuras de Investigación Mayor validación de instrumentos de medida de evitación experiencial (ej AAQ) Desarrollo de medidas objetivas de conductas con valor",
+      "source_file": "therapies\\act.md",
+      "theme": "act",
+      "primary_emotion": "accepting",
+      "tags": [],
+      "chunk_id": "act_18"
+    },
+    {
+      "text": "Comparación sistemática ACT vs TCC en diferentes trastornos Clarificación conceptual de la evitación experiencial y su relación con otros modelos de psicopatología --- Conclusión ACT es un enfoque terapéutico centrado en la aceptación, el mindfulness y el compromiso con valores",
+      "source_file": "therapies\\act.md",
+      "theme": "act",
+      "primary_emotion": "accepting",
+      "tags": [],
+      "chunk_id": "act_19"
+    },
+    {
+      "text": "En trastornos de ansiedad como el pánico, ofrece una alternativa prometedora a la TCC al poner el foco en vivir una vida significativa en lugar de eliminar síntomas Su flexibilidad y su fuerte base teórica hacen que sea una herramienta valiosa en contextos clínicos diversos",
+      "source_file": "therapies\\act.md",
+      "theme": "act",
+      "primary_emotion": "accepting",
+      "tags": [],
+      "chunk_id": "act_20"
+    },
+    {
+      "text": "--- Nota: Este documento es de carácter psicoeducativo y no sustituye la valoración ni el tratamiento por parte de un profesional de salud mental.",
+      "source_file": "therapies\\act.md",
+      "theme": "act",
+      "primary_emotion": "accepting",
+      "tags": [],
+      "chunk_id": "act_21"
+    },
+    {
+      "text": "Cognitive Behavioral Therapy (CBT) for PTSD Definición General La Terapia Cognitivo-Conductual (CBT) es un enfoque psicológico basado en la evidencia para el tratamiento de múltiples trastornos mentales, incluyendo la depresión, ansiedad, abuso de sustancias, trastornos alimentarios, y especialmente el trastorno por estrés postraumático (PTSD)",
+      "source_file": "therapies\\cbt_ptsd.md",
+      "theme": "cbt_ptsd",
+      "primary_emotion": "neutral",
+      "tags": [],
+      "chunk_id": "cbt_ptsd_1"
+    },
+    {
+      "text": "Su objetivo central es modificar patrones desadaptativos de pensamiento, conducta y emoción que sostienen el malestar, mejorando así la calidad de vida",
+      "source_file": "therapies\\cbt_ptsd.md",
+      "theme": "cbt_ptsd",
+      "primary_emotion": "neutral",
+      "tags": [],
+      "chunk_id": "cbt_ptsd_2"
+    },
+    {
+      "text": "Se diferencia de otras terapias por su amplio soporte en investigación y su orientación práctica: la persona aprende a ser su propio terapeuta, aplicando lo que practica en sesión a su vida diaria",
+      "source_file": "therapies\\cbt_ptsd.md",
+      "theme": "cbt_ptsd",
+      "primary_emotion": "neutral",
+      "tags": [],
+      "chunk_id": "cbt_ptsd_3"
+    },
+    {
+      "text": "--- Principios Fundamentales de la CBT Los problemas psicológicos están basados en formas disfuncionales de pensar y en conductas aprendidas desadaptativas Las personas pueden aprender mejores formas de enfrentarse a sus problemas, reduciendo síntomas y aumentando su eficacia en la vida diaria",
+      "source_file": "therapies\\cbt_ptsd.md",
+      "theme": "cbt_ptsd",
+      "primary_emotion": "neutral",
+      "tags": [],
+      "chunk_id": "cbt_ptsd_4"
+    },
+    {
+      "text": "Se centra en el presente y en los problemas actuales, sin descuidar el contexto histórico Combina estrategias cognitivas (cambiar pensamientos distorsionados) y conductuales (interrumpir patrones poco útiles de comportamiento)",
+      "source_file": "therapies\\cbt_ptsd.md",
+      "theme": "cbt_ptsd",
+      "primary_emotion": "neutral",
+      "tags": [],
+      "chunk_id": "cbt_ptsd_5"
+    },
+    {
+      "text": "--- Aplicación al PTSD Las guías clínicas (NICE, APA) recomiendan CBT como tratamiento de primera línea para PTSD Se suele aplicar en 12–16 sesiones, en formato individual o grupal",
+      "source_file": "therapies\\cbt_ptsd.md",
+      "theme": "cbt_ptsd",
+      "primary_emotion": "neutral",
+      "tags": [],
+      "chunk_id": "cbt_ptsd_6"
+    },
+    {
+      "text": "Teorías que explican su efectividad Teoría del Procesamiento Emocional (Rauch & Foa, 2006): El trauma genera asociaciones desadaptativas entre estímulos seguros, significados (\"el mundo es peligroso\") y respuestas (miedo, anestesia emocional)",
+      "source_file": "therapies\\cbt_ptsd.md",
+      "theme": "cbt_ptsd",
+      "primary_emotion": "neutral",
+      "tags": [],
+      "chunk_id": "cbt_ptsd_7"
+    },
+    {
+      "text": "👉 CBT ayuda a modificar estas asociaciones para restaurar un funcionamiento saludable Teoría Social Cognitiva (Benight & Bandura, 2004): Tras el trauma, las creencias sobre uno mismo y el mundo pueden tornarse negativas (p ej., “si fui violado/a es porque soy malo/a”)",
+      "source_file": "therapies\\cbt_ptsd.md",
+      "theme": "cbt_ptsd",
+      "primary_emotion": "neutral",
+      "tags": [],
+      "chunk_id": "cbt_ptsd_8"
+    },
+    {
+      "text": "👉 CBT facilita reconstruir estas creencias hacia una narrativa más realista y adaptativa, mejorando la autoeficacia percibida",
+      "source_file": "therapies\\cbt_ptsd.md",
+      "theme": "cbt_ptsd",
+      "primary_emotion": "neutral",
+      "tags": [],
+      "chunk_id": "cbt_ptsd_9"
+    },
+    {
+      "text": "--- Técnicas CBT específicas para PTSD Reestructuración cognitiva: identificar y cuestionar pensamientos automáticos y distorsiones (catastrofismo, culpa excesiva, “todo o nada”)",
+      "source_file": "therapies\\cbt_ptsd.md",
+      "theme": "cbt_ptsd",
+      "primary_emotion": "neutral",
+      "tags": [],
+      "chunk_id": "cbt_ptsd_10"
+    },
+    {
+      "text": "Exposición gradual y controlada: revivir la narrativa del trauma o enfrentarse progresivamente a recuerdos, emociones o contextos evitados, con el fin de disminuir el miedo y la evitación Psychoeducación: informar al paciente sobre los efectos del trauma y el funcionamiento del PTSD",
+      "source_file": "therapies\\cbt_ptsd.md",
+      "theme": "cbt_ptsd",
+      "primary_emotion": "neutral",
+      "tags": [],
+      "chunk_id": "cbt_ptsd_11"
+    },
+    {
+      "text": "Entrenamiento en manejo del estrés y relajación Prevención de recaídas y planificación de crisis Tareas para casa: consolidar aprendizajes y entrenar habilidades fuera de sesión",
+      "source_file": "therapies\\cbt_ptsd.md",
+      "theme": "cbt_ptsd",
+      "primary_emotion": "neutral",
+      "tags": [],
+      "chunk_id": "cbt_ptsd_12"
+    },
+    {
+      "text": "El objetivo es devolver al paciente un sentido de control, confianza y predictibilidad, al tiempo que se reducen evitaciones y síntomas intrusivos",
+      "source_file": "therapies\\cbt_ptsd.md",
+      "theme": "cbt_ptsd",
+      "primary_emotion": "neutral",
+      "tags": [],
+      "chunk_id": "cbt_ptsd_13"
+    },
+    {
+      "text": "--- Caso Clínico: Jill, Veterana de Guerra Jill, de 32 años, veterana de Afganistán, presentaba PTSD desde hacía 5 años: pesadillas, evitación, abuso de alcohol, depresión y disfunciones familiares/laborales",
+      "source_file": "therapies\\cbt_ptsd.md",
+      "theme": "cbt_ptsd",
+      "primary_emotion": "neutral",
+      "tags": [],
+      "chunk_id": "cbt_ptsd_14"
+    },
+    {
+      "text": "Durante las sesiones, se usaron hojas de registro cognitivo y diálogo socrático para trabajar su creencia de que fue su culpa la muerte de sus compañeros en un ataque con IED",
+      "source_file": "therapies\\cbt_ptsd.md",
+      "theme": "cbt_ptsd",
+      "primary_emotion": "neutral",
+      "tags": [],
+      "chunk_id": "cbt_ptsd_15"
+    },
+    {
+      "text": "Ejemplo de trabajo en sesión: Pensamiento inicial: “Debí haber hecho esperar al segundo camión; fue culpa mía que murieran.” A través del diálogo se exploraron protocolos militares, la imposibilidad de detectar explosivos a larga distancia, y el hecho de que otros soldados tampoco vieron señales",
+      "source_file": "therapies\\cbt_ptsd.md",
+      "theme": "cbt_ptsd",
+      "primary_emotion": "neutral",
+      "tags": [],
+      "chunk_id": "cbt_ptsd_16"
+    },
+    {
+      "text": "Resultado: Jill reconoció que actuó siguiendo el protocolo y que no era responsable directo de la explosión Emoción asociada: la culpa disminuyó significativamente, dando paso a sentimientos de alivio e, incluso, orgullo por haber actuado adecuadamente en condiciones extremas",
+      "source_file": "therapies\\cbt_ptsd.md",
+      "theme": "cbt_ptsd",
+      "primary_emotion": "neutral",
+      "tags": [],
+      "chunk_id": "cbt_ptsd_17"
+    },
+    {
+      "text": "Este ejemplo ilustra cómo la CBT ayuda a modificar creencias desadaptativas y a reducir emociones negativas ligadas al trauma --- Resumen de Beneficios del CBT en PTSD Reducción significativa de síntomas intrusivos, evitación y alteraciones emocionales",
+      "source_file": "therapies\\cbt_ptsd.md",
+      "theme": "cbt_ptsd",
+      "primary_emotion": "neutral",
+      "tags": [],
+      "chunk_id": "cbt_ptsd_18"
+    },
+    {
+      "text": "Mejora en la capacidad de procesamiento del trauma y la reevaluación de creencias disfuncionales Fomenta la autoeficacia y el desarrollo de habilidades de afrontamiento sostenibles En muchos casos, tan efectiva o más que la farmacoterapia, con la ventaja adicional de empoderar al paciente.",
+      "source_file": "therapies\\cbt_ptsd.md",
+      "theme": "cbt_ptsd",
+      "primary_emotion": "neutral",
+      "tags": [],
+      "chunk_id": "cbt_ptsd_19"
+    },
+    {
+      "text": "DBT (Terapia Dialéctica Conductual) Definición La Terapia Dialéctica Conductual (DBT) es un programa estructurado de psicoterapia con un componente formativo fuerte Fue desarrollada por Marsha Linehan para tratar a pacientes con ideación suicida crónica y conductas autodestructivas",
+      "source_file": "therapies\\dbt.md",
+      "theme": "dbt",
+      "primary_emotion": "regulating",
+      "tags": [],
+      "chunk_id": "dbt_1"
+    },
+    {
+      "text": "Hoy en día se aplica a trastorno límite de la personalidad (TLP), depresión, ansiedad, TCA, PTSD, abuso de sustancias, bipolaridad y problemas de desregulación emocional Principios Fundamentales Dialecticidad: aceptar la complejidad y la coexistencia de opuestos; balance entre aceptación y cambio",
+      "source_file": "therapies\\dbt.md",
+      "theme": "dbt",
+      "primary_emotion": "regulating",
+      "tags": [],
+      "chunk_id": "dbt_2"
+    },
+    {
+      "text": "Validez del sufrimiento: reconocer que las emociones fuertes tienen lógica en el contexto vital de cada persona Aceptación radical: permitir que las experiencias se reconozcan sin evitación, a la vez que se busca el cambio",
+      "source_file": "therapies\\dbt.md",
+      "theme": "dbt",
+      "primary_emotion": "regulating",
+      "tags": [],
+      "chunk_id": "dbt_3"
+    },
+    {
+      "text": "Terapia en equipo: los terapeutas trabajan en consultas regulares como parte de un grupo clínico Estructura del Tratamiento Duración: suele durar entre 6 meses y 1 año, con posibilidad de extenderse",
+      "source_file": "therapies\\dbt.md",
+      "theme": "dbt",
+      "primary_emotion": "regulating",
+      "tags": [],
+      "chunk_id": "dbt_4"
+    },
+    {
+      "text": "Sesiones individuales: 1 hora semanal para revisar el uso de habilidades y trabajar en objetivos personales Entrenamiento grupal: 1,5 a 2 horas semanales (4 a 10 personas) Se centra en el aprendizaje práctico de habilidades",
+      "source_file": "therapies\\dbt.md",
+      "theme": "dbt",
+      "primary_emotion": "regulating",
+      "tags": [],
+      "chunk_id": "dbt_5"
+    },
+    {
+      "text": "Tareas entre sesiones: incluye prácticas de mindfulness, registros emocionales y ejercicios concretos Diarios de emociones y conductas: tarjetas que ayudan a registrar intensidad emocional, pensamientos y uso de habilidades",
+      "source_file": "therapies\\dbt.md",
+      "theme": "dbt",
+      "primary_emotion": "regulating",
+      "tags": [],
+      "chunk_id": "dbt_6"
+    },
+    {
+      "text": "Acceso en crisis: en algunos casos, contacto entre sesiones para “coaching de habilidades” Componentes Principales (Habilidades DBT) Mindfulness - Desarrollar la conciencia plena de pensamientos, emociones y sensaciones en el momento presente - Permite disminuir la reactividad impulsiva",
+      "source_file": "therapies\\dbt.md",
+      "theme": "dbt",
+      "primary_emotion": "regulating",
+      "tags": [],
+      "chunk_id": "dbt_7"
+    },
+    {
+      "text": "Tolerancia al malestar - Aprender a sobrellevar emociones negativas intensas sin recurrir a conductas autodestructivas - Incluye técnicas como distracción saludable, aceptación radical y autoconsuelo Regulación emocional - Identificar, reconocer y etiquetar emociones",
+      "source_file": "therapies\\dbt.md",
+      "theme": "dbt",
+      "primary_emotion": "regulating",
+      "tags": [],
+      "chunk_id": "dbt_8"
+    },
+    {
+      "text": "- Reducir la vulnerabilidad a estados emocionales extremos - Estrategias para modular intensidad emocional y prevenir crisis Efectividad interpersonal - Aprender a pedir lo que se necesita manteniendo el respeto propio y ajeno - Fortalecer relaciones importantes y reducir resentimientos",
+      "source_file": "therapies\\dbt.md",
+      "theme": "dbt",
+      "primary_emotion": "regulating",
+      "tags": [],
+      "chunk_id": "dbt_9"
+    },
+    {
+      "text": "- Uso de habilidades como assertividad y validación Beneficios Esperados Disminución de autolesiones y conductas suicidas Reducción de hospitalizaciones Mayor autocontrol y resiliencia emocional",
+      "source_file": "therapies\\dbt.md",
+      "theme": "dbt",
+      "primary_emotion": "regulating",
+      "tags": [],
+      "chunk_id": "dbt_10"
+    },
+    {
+      "text": "Mejor calidad en las relaciones interpersonales Incremento en la capacidad de modular emociones intensas Evaluación y Progreso Uso de cards o apps para registrar emociones, impulsos, autolesiones, intentos suicidas y uso de habilidades",
+      "source_file": "therapies\\dbt.md",
+      "theme": "dbt",
+      "primary_emotion": "regulating",
+      "tags": [],
+      "chunk_id": "dbt_11"
+    },
+    {
+      "text": "Análisis funcional de conductas problemáticas en sesiones individuales La conducta de riesgo vital tiene prioridad clínica en cada sesión ¿Qué Buscar en un Terapeuta DBT Licencia profesional en salud mental y formación específica en DBT",
+      "source_file": "therapies\\dbt.md",
+      "theme": "dbt",
+      "primary_emotion": "regulating",
+      "tags": [],
+      "chunk_id": "dbt_12"
+    },
+    {
+      "text": "Certificación (ej CDBT) cuando esté disponible Integración en un equipo de consulta Claridad en normas de terapia, duración y accesibilidad entre sesiones",
+      "source_file": "therapies\\dbt.md",
+      "theme": "dbt",
+      "primary_emotion": "regulating",
+      "tags": [],
+      "chunk_id": "dbt_13"
+    },
+    {
+      "text": "Ajuste personal: la relación terapéutica y confianza son esenciales Precauciones DBT es intensivo y demanda compromiso Puede no ser adecuado para todas las personas si no hay motivación para trabajar de forma activa Siempre se debe aplicar bajo supervisión profesional",
+      "source_file": "therapies\\dbt.md",
+      "theme": "dbt",
+      "primary_emotion": "regulating",
+      "tags": [],
+      "chunk_id": "dbt_14"
+    },
+    {
+      "text": "Recursos Adicionales NHS – DBT Overview NEABPD – What is DBT Verywell Mind – DBT Therapy --- Nota: Este documento es de carácter psicoeducativo No sustituye la valoración clínica ni los servicios de emergencia en caso de crisis.",
+      "source_file": "therapies\\dbt.md",
+      "theme": "dbt",
+      "primary_emotion": "regulating",
+      "tags": [],
+      "chunk_id": "dbt_15"
+    },
+    {
+      "text": "Bajo estado de ánimo y Depresión Introducción El bajo ánimo y la depresión afectan a 1 de cada 4 personas en algún momento Pueden durar semanas o meses y crear un círculo vicioso que impacta en varias áreas de la vida Modelo de las 5 Áreas Situación / entorno externo Pensamientos",
+      "source_file": "therapies\\low_mood_depression.md",
+      "theme": "low_mood_depression",
+      "primary_emotion": "neutral",
+      "tags": [],
+      "chunk_id": "low_mood_depression_1"
+    },
+    {
+      "text": "Emociones Síntomas físicos Conductas Ejemplo: Dave, tras perder su empleo, empezó a tener pensamientos autocríticos, se sintió culpable, sufrió insomnio y evitó actividades, reforzando la depresión",
+      "source_file": "therapies\\low_mood_depression.md",
+      "theme": "low_mood_depression",
+      "primary_emotion": "neutral",
+      "tags": [],
+      "chunk_id": "low_mood_depression_2"
+    },
+    {
+      "text": "Estrategias de afrontamiento Reconocer pensamientos negativos y patrones de evitación Introducir actividades con valor, aunque sea en pasos pequeños Reorganizar rutinas (sueño, alimentación, ejercicio ligero) Mantener contacto social positivo",
+      "source_file": "therapies\\low_mood_depression.md",
+      "theme": "low_mood_depression",
+      "primary_emotion": "neutral",
+      "tags": [],
+      "chunk_id": "low_mood_depression_3"
+    },
+    {
+      "text": "Buscar ayuda profesional (Terapia Cognitivo Conductual, programas NHS Talking Therapies) Consejos prácticos Escribir las 5 áreas propias Identificar un cambio pequeño en la conducta que genere placer, logro o cercanía con otros Practicar decir “sí” en lugar de evitar encuentros y actividades.",
+      "source_file": "therapies\\low_mood_depression.md",
+      "theme": "low_mood_depression",
+      "primary_emotion": "neutral",
+      "tags": [],
+      "chunk_id": "low_mood_depression_4"
+    },
+    {
+      "text": "Meditación Introducción La meditación no es mística: es una técnica de entrenamiento de la atención para encontrar calma y claridad Su práctica regular ayuda a reducir tensión física, pensamientos ansiosos y baja autoestima Beneficios Reducción de ansiedad, estrés y bajo estado de ánimo",
+      "source_file": "therapies\\meditation.md",
+      "theme": "meditation",
+      "primary_emotion": "neutral",
+      "tags": [],
+      "chunk_id": "meditation_1"
+    },
+    {
+      "text": "Mejora del sueño Mayor calma y capacidad de respuesta adecuada ante dificultades Guía en 7 pasos Tiempo: reserva momentos breves (ideal 20 minutos) Espacio: lugar cómodo y cálido",
+      "source_file": "therapies\\meditation.md",
+      "theme": "meditation",
+      "primary_emotion": "neutral",
+      "tags": [],
+      "chunk_id": "meditation_2"
+    },
+    {
+      "text": "Preparación: postura erguida (suelo, silla o cama con soporte) Conexión sensorial: notar sonidos, olores, contacto con la superficie Iniciar práctica: enfocar en la respiración (mentalizar “inhalo / exhalo”) Mente errante: reconocer distracciones y volver amablemente a la respiración",
+      "source_file": "therapies\\meditation.md",
+      "theme": "meditation",
+      "primary_emotion": "neutral",
+      "tags": [],
+      "chunk_id": "meditation_3"
+    },
+    {
+      "text": "Cierre gradual: detener recitación, mantener los ojos cerrados unos minutos y luego abrirlos suavemente Consejos La meta no es “dejar la mente en blanco” sino notar y volver a la atención Un pensamiento intrusivo puede ser redirigido, no combatido",
+      "source_file": "therapies\\meditation.md",
+      "theme": "meditation",
+      "primary_emotion": "neutral",
+      "tags": [],
+      "chunk_id": "meditation_4"
+    },
+    {
+      "text": "Cada sesión, incluso con divagación, aporta beneficios.",
+      "source_file": "therapies\\meditation.md",
+      "theme": "meditation",
+      "primary_emotion": "neutral",
+      "tags": [],
+      "chunk_id": "meditation_5"
+    },
+    {
+      "text": "Mindfulness Definición El mindfulness consiste en prestar atención, de manera consciente y deliberada, al momento presente, sin juzgarlo Supone conectar con el cuerpo, los sentidos, pensamientos y emociones mientras ocurren Beneficios Mayor disfrute de la vida cotidiana Mejor autoconocimiento",
+      "source_file": "therapies\\mindfulness.md",
+      "theme": "mindfulness",
+      "primary_emotion": "calm",
+      "tags": [],
+      "chunk_id": "mindfulness_1"
+    },
+    {
+      "text": "Menor fusión con pensamientos negativos Reducción de estrés, ansiedad y síntomas depresivos leves Recomendado por NICE como intervención válida para depresión leve y prevención de recaídas Prácticas informales Notar las sensaciones al caminar, comer o respirar",
+      "source_file": "therapies\\mindfulness.md",
+      "theme": "mindfulness",
+      "primary_emotion": "calm",
+      "tags": [],
+      "chunk_id": "mindfulness_2"
+    },
+    {
+      "text": "Registrar pensamientos fugaces como “eventos mentales” sin identificarse con ellos Nombrar silenciosamente emociones: “esto es ansiedad”, “esto es cansancio”",
+      "source_file": "therapies\\mindfulness.md",
+      "theme": "mindfulness",
+      "primary_emotion": "calm",
+      "tags": [],
+      "chunk_id": "mindfulness_3"
+    },
+    {
+      "text": "Prácticas formales Meditación mindfulness: atención a la respiración, pensamientos o partes del cuerpo, regresando cada vez que la mente divaga Yoga y Tai-Chi: conexión entre movimiento, respiración y presencia Límites Ayuda en depresión leve, estrés y ansiedad, pero no siempre resulta útil",
+      "source_file": "therapies\\mindfulness.md",
+      "theme": "mindfulness",
+      "primary_emotion": "calm",
+      "tags": [],
+      "chunk_id": "mindfulness_4"
+    },
+    {
+      "text": "En algunos casos puede generar incomodidad o empeorar síntomas No sustituye atención clínica Recomendaciones Introducir mindfulness de forma gradual Practicar en contextos seguros",
+      "source_file": "therapies\\mindfulness.md",
+      "theme": "mindfulness",
+      "primary_emotion": "calm",
+      "tags": [],
+      "chunk_id": "mindfulness_5"
+    },
+    {
+      "text": "Integrar con otras estrategias de autocuidado y tratamientos recomendados por profesionales.",
+      "source_file": "therapies\\mindfulness.md",
+      "theme": "mindfulness",
+      "primary_emotion": "calm",
+      "tags": [],
+      "chunk_id": "mindfulness_6"
+    },
+    {
+      "text": "Relajación Guía de Entrenamiento La relajación controlada permite reducir ansiedad y tensión corporal Puede practicarse en casa, trabajo o transporte El método propuesto dura unos 5 minutos Body Scan Prestar atención progresiva a manos, brazos, hombros, pies, piernas, abdomen, rostro",
+      "source_file": "therapies\\relaxation.md",
+      "theme": "relaxation",
+      "primary_emotion": "calm",
+      "tags": [],
+      "chunk_id": "relaxation_1"
+    },
+    {
+      "text": "Identificar tensiones y sustituirlas por sensaciones de relajación Asociar la práctica a la palabra clave “Calm-Control” Beneficios Permite inducir calma rápida en situaciones ansiosas Fortalece sensación de control sobre el cuerpo",
+      "source_file": "therapies\\relaxation.md",
+      "theme": "relaxation",
+      "primary_emotion": "calm",
+      "tags": [],
+      "chunk_id": "relaxation_2"
+    },
+    {
+      "text": "Complementa prácticas de mindfulness y meditación Recomendaciones Usar diariamente para ganar destreza Combinar con técnicas alternativas: música, paseos, visualización calmante En caso de incomodidad con la práctica corporal, optar por estrategias alternativas de autocuidado.",
+      "source_file": "therapies\\relaxation.md",
+      "theme": "relaxation",
+      "primary_emotion": "calm",
+      "tags": [],
+      "chunk_id": "relaxation_3"
+    },
+    {
+      "text": "Autoestima Definición La autoestima es la valoración que hacemos de nosotros mismos Una autoestima sana fomenta resiliencia; la baja autoestima incrementa ansiedad y depresión Causas comunes Críticas en la infancia Dificultad para cumplir expectativas propias o de otros",
+      "source_file": "therapies\\self_esteem.md",
+      "theme": "self_esteem",
+      "primary_emotion": "neutral",
+      "tags": [],
+      "chunk_id": "self_esteem_1"
+    },
+    {
+      "text": "Personalidad autocrítica o perfeccionista Estrés y experiencias de pérdida o enfermedad Efectos Retirada social Evitación de retos",
+      "source_file": "therapies\\self_esteem.md",
+      "theme": "self_esteem",
+      "primary_emotion": "neutral",
+      "tags": [],
+      "chunk_id": "self_esteem_2"
+    },
+    {
+      "text": "Reforzamiento de dudas y conductas de evitación Riesgo de hábitos poco saludables Estrategias de mejora Identificar creencias negativas y desafiarlas con evidencias positivas Hacer listas de cualidades y logros",
+      "source_file": "therapies\\self_esteem.md",
+      "theme": "self_esteem",
+      "primary_emotion": "neutral",
+      "tags": [],
+      "chunk_id": "self_esteem_3"
+    },
+    {
+      "text": "Reconocer talentos personales (“soy buen cocinero”, “soy confiable”) Practicar amabilidad consigo mismo Aprender a decir “no” para evitar sobrecargas Probar nuevos retos que fortalezcan confianza",
+      "source_file": "therapies\\self_esteem.md",
+      "theme": "self_esteem",
+      "primary_emotion": "neutral",
+      "tags": [],
+      "chunk_id": "self_esteem_4"
+    },
+    {
+      "text": "Recomendaciones adicionales Rodearse de relaciones positivas Ser asertivo: expresar necesidades y respetar las propias Recordar que la autoestima puede mejorarse a cualquier edad.",
+      "source_file": "therapies\\self_esteem.md",
+      "theme": "self_esteem",
+      "primary_emotion": "neutral",
+      "tags": [],
+      "chunk_id": "self_esteem_5"
+    },
+    {
+      "text": "Pensamientos Inútiles (Unhelpful Thoughts) Definición Los pensamientos inútiles son patrones automáticos de pensamiento que empeoran el estado emocional y reducen la actividad Son frecuentes en bajo ánimo y ansiedad Estilos comunes Catastrofismo (“todo saldrá mal”) Autocrítica (“soy un fracaso”)",
+      "source_file": "therapies\\unhelpful_thoughts.md",
+      "theme": "unhelpful_thoughts",
+      "primary_emotion": "neutral",
+      "tags": [],
+      "chunk_id": "unhelpful_thoughts_1"
+    },
+    {
+      "text": "Comparación con otros (“ellos son mejores que yo”) Adivinación mental (“piensan que soy aburrido”) Responsabilización excesiva Ejemplo: Parvin, al preparar su CV, pensaba “¿para qué intentarlo?”, lo que la llevó a abandonar la tarea y sentirse peor",
+      "source_file": "therapies\\unhelpful_thoughts.md",
+      "theme": "unhelpful_thoughts",
+      "primary_emotion": "neutral",
+      "tags": [],
+      "chunk_id": "unhelpful_thoughts_2"
+    },
+    {
+      "text": "Programa AUTBP (Unhelpful Thought Busting Programme) Label it → identificar y etiquetar el pensamiento automático Leave it → no discutirlo ni engancharse; dejarlo estar Stand up to it → no permitir que “mande”; actuar en contra del pensamiento",
+      "source_file": "therapies\\unhelpful_thoughts.md",
+      "theme": "unhelpful_thoughts",
+      "primary_emotion": "neutral",
+      "tags": [],
+      "chunk_id": "unhelpful_thoughts_3"
+    },
+    {
+      "text": "Give yourself a break → hablarse con amabilidad, como lo haría un amigo Look differently → poner las cosas en perspectiva y considerar consejos alternativos Consejos Reconocer que el pensamiento no es la realidad Practicar distancia cognitiva (“es solo un pensamiento”)",
+      "source_file": "therapies\\unhelpful_thoughts.md",
+      "theme": "unhelpful_thoughts",
+      "primary_emotion": "neutral",
+      "tags": [],
+      "chunk_id": "unhelpful_thoughts_4"
+    },
+    {
+      "text": "Retomar la acción incluso si la mente dice “no”.",
+      "source_file": "therapies\\unhelpful_thoughts.md",
+      "theme": "unhelpful_thoughts",
+      "primary_emotion": "neutral",
+      "tags": [],
+      "chunk_id": "unhelpful_thoughts_5"
+    }
+  ]
+}
